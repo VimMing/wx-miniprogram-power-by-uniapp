@@ -3,7 +3,8 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "生日备忘本"
+				"navigationBarTitleText": "生日备忘本",
+				"enablePullDownRefresh": true
 			}
 		},
 		{

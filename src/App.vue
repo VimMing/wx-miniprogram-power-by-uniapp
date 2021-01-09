@@ -1,4 +1,5 @@
 <script>
+
 export default {
   onLaunch: function() {
     console.log("App Launch");
@@ -26,7 +27,7 @@ export default {
     });
   },
   onShow: function() {
-    console.log("App Show");
+    console.log("login");
   },
   onHide: function() {
     console.log("App Hide");

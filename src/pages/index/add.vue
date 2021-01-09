@@ -101,6 +101,8 @@
 </template>
 
 <script>
+import { createFriendBirthday, myFriends } from "@/utils/apis.js";
+import { storage } from "@/utils";
 export default {
   data() {
     return {
@@ -138,7 +140,7 @@ export default {
         name: "",
         sex: -1, // 0 boy , 1 girl
         birthday: "", // month-day
-        type: 0, // 0: false, 1: true
+        type: 0, // 0: false, 1: true 公历还是农历
         zodiac: ""
       },
       zodiacActiveIndex: "",
@@ -197,19 +199,38 @@ export default {
         return e;
       }
       this.loading = true;
-      var storage_birthday_list = "storage_birthday_list";
       try {
-        const value = uni.getStorageSync(storage_birthday_list);
-        let arr = [];
-        if (value) {
-          arr = JSON.parse(value) || [];
-        }
-        arr.push(this.form);
-        uni.setStorageSync(storage_birthday_list, JSON.stringify(arr));
-        this.loading = false;
-        uni.navigateBack();
+        createFriendBirthday({
+          name: this.form.name,
+          zodiac: +this.zodiacActiveIndex,
+          birthday: "2021-" + this.form.birthday,
+          isLunar: Boolean(this.form.type)
+        })
+          .then(() => {
+            myFriends()
+              .then(res => {
+                storage.birthdayList = res.data;
+              })
+              .finally(() => {
+                uni.navigateBack();
+                this.loading = false;
+              });
+          })
+          .catch(e => {
+            uni.showToast({
+              icon: "none",
+              title: e,
+              duration: 1000
+            });
+            this.loading = false;
+          });
       } catch (e) {
         // error
+        uni.showToast({
+          icon: "none",
+          title: e,
+          duration: 1000
+        });
         this.loading = false;
       }
     },
@@ -228,7 +249,7 @@ export default {
         this.form[name] = value;
       }
       if (name === "birthday") {
-        this.form[name] = value.map(i => i + 1).join("-");
+        this.form[name] = value.map(i => ("0" + (i + 1)).slice(-2)).join("-");
         this.form["_" + name] = value[0] + 1 + "月" + (value[1] + 1) + "日";
       }
       if (name === "zodiac") {

@@ -2,16 +2,21 @@
   <view>
     <view v-if="len">
       <view class="birthday-list-wrap">
-        <view class="birthday-item" v-for="(item, index) in list" :key="index">
+        <view class="birthday-item" v-for="(item, index) in l" :key="index">
           <view class="avatar-wrap">
-            <view class="avatar iconfont" :class="'icon-' + item.zodiac"></view>
+            <view class="avatar iconfont" :class="'icon-' + zodiac[item.zodiac]"></view>
           </view>
           <view class="birthday-content">
             <view class="name-birthday-wrap">
               <text class="name">{{item.name}}</text>
-              <text class="birthday">{{item.birthday}}</text>
+              <text class="birthday">{{item._birthday}}({{item.isLunar ? "农历" : "公历"}})</text>
             </view>
-            <view></view>
+            <view class="next-birthday-wrap">
+              <view
+                class="next-birthday-distance"
+              >{{item.daysDistance == 0 ? "今" : item.daysDistance }}日</view>
+              <view class="next-birthday-day">距下次生日{{item._solarBirthday.format("yyyy年MM月dd日")}}</view>
+            </view>
           </view>
         </view>
       </view>
@@ -36,6 +41,8 @@
 
 <script>
 import uniFab from "@/components/uni-fab/uni-fab.vue";
+import { wxGetToken, myFriends } from "@/utils/apis.js";
+import { storage, storageEmpty, promisify } from "@/utils";
 export default {
   components: {
     uniFab
@@ -44,6 +51,20 @@ export default {
     return {
       title: "Hello, 点击下面的按钮添加生日备忘^_^",
       list: [],
+      zodiac: [
+        "mouse",
+        "cattle",
+        "tiger",
+        "rabitt",
+        "dragon",
+        "snake",
+        "horse",
+        "sheep",
+        "monkey",
+        "chicken",
+        "dog",
+        "pig"
+      ],
       pattern: {
         color: "white",
         selectedColor: "",
@@ -56,21 +77,55 @@ export default {
   computed: {
     len() {
       return this.list.length;
+    },
+    l() {
+      let res = [];
+      let today = new Date();
+      res = this.list.map(item => {
+        let i = { ...item };
+        i._birthday = new Date(i.birthday).format("MM月dd日");
+        let j = i.solarBirthday;
+        i._solarBirthday = new Date(j.year, j.month - 1, j.day, 23, 59, 59);
+        if (i._solarBirthday.getTime() - today.getTime() < 0) {
+          i._solarBirthday.setYear(j.year + 1);
+        }
+        i.daysDistance = Math.floor(
+          (i._solarBirthday.getTime() - today.getTime()) / (24 * 3600 * 1000)
+        );
+        return i;
+      });
+      res.sort((i, j) => i.daysDistance - j.daysDistance);
+      return res;
     }
   },
+  onPullDownRefresh() {
+    console.log("refresh");
+    myFriends()
+      .then(res => {
+        this.list = res.data || [];
+        storage.birthdayList = res.data;
+      })
+      .finally(() => {
+        uni.stopPullDownRefresh();
+      });
+  },
+  onLoad() {
+    promisify(uni.login)({
+      provider: "weixin"
+    }).then(({ code }) => {
+      wxGetToken(code).then(res => {
+        myFriends().then(res => {
+          this.list = res.data || [];
+          storage.birthdayList = res.data;
+        });
+      });
+    });
+  },
   onShow() {
-    var storage_birthday_list = "storage_birthday_list";
-    let arr = [];
-    try {
-      const value = uni.getStorageSync(storage_birthday_list);
-      if (value) {
-        arr = JSON.parse(value) || [];
-      }
-    } catch (e) {
-      console.error(e);
+    console.log(storageEmpty("birthdayList"));
+    if (!storageEmpty("birthdayList")) {
+      this.list = storage.birthdayList;
     }
-    this.list = arr;
-    console.log(this.list);
   },
   methods: {
     trigger(e) {
@@ -94,10 +149,29 @@ export default {
   .birthday-content {
     display: flex;
     justify-content: space-between;
-	padding: 10rpx;
-	.name{
-		color: $uni-text-color;
-	}
+    padding: 10rpx;
+    flex: 1;
+    text.birthday {
+      font-size: $uni-font-size-sm;
+    }
+    .name {
+      font-size: $uni-font-size-lg;
+      color: $uni-text-color;
+    }
+    .next-birthday-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .next-birthday-distance {
+      color: $uni-color-primary;
+      font-size: $uni-font-size-lg;
+    }
+    .next-birthday-day {
+      white-space: nowrap;
+      font-size: $uni-font-size-sm;
+    }
   }
   .name-birthday-wrap {
     display: flex;
@@ -114,10 +188,12 @@ export default {
     border: 1px solid #eee;
     border-radius: 50%;
     margin-right: 10px;
-  }
-  .avatar {
     width: 80rpx;
     height: 80rpx;
+  }
+  .avatar {
+    width: 100%;
+    height: 100%;
   }
   padding: 10px 30rpx;
 }
