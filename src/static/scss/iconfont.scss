@@ -1,0 +1,63 @@
+@font-face {
+    font-family: 'iconfont';  /* project id 2114725 */
+    src: url('//at.alicdn.com/t/font_2114725_70zxar6q73t.eot');
+    src: url('//at.alicdn.com/t/font_2114725_70zxar6q73t.eot?#iefix') format('embedded-opentype'),
+    url('//at.alicdn.com/t/font_2114725_70zxar6q73t.woff2') format('woff2'),
+    url('//at.alicdn.com/t/font_2114725_70zxar6q73t.woff') format('woff'),
+    url('//at.alicdn.com/t/font_2114725_70zxar6q73t.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_2114725_70zxar6q73t.svg#iconfont') format('svg');
+  }
+
+  .iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  .icon-more:before {
+    content: "\e8af";
+  }
+
+  .icon-add:before {
+    content: "\e62c";
+  }
+  .icon-mouse {
+    background-image: url('@/static/icons/mouse.png');
+  }
+  .icon-cattle {
+    background-image: url('@/static/icons/cattle.png');
+  }
+  .icon-tiger {
+    background-image: url('@/static/icons/tiger.png');
+  }
+  .icon-rabitt {
+    background-image: url('@/static/icons/rabitt.png');
+  }
+  .icon-dragon {
+    background-image: url('@/static/icons/dragon.png');
+  }
+  .icon-snake {
+    background-image: url('@/static/icons/snake.png');
+  }
+  .icon-horse {
+    background-image: url('@/static/icons/horse.png');
+  }
+  .icon-sheep {
+    background-image: url('@/static/icons/sheep.png');
+  }
+  .icon-monkey {
+    background-image: url('@/static/icons/monkey.png');
+  }
+  .icon-chicken {
+    background-image: url('@/static/icons/chicken.png');
+  }
+  .icon-dog {
+    background-image: url('@/static/icons/dog.png');
+  }
+  .icon-pig {
+    background-image: url('@/static/icons/pig.png');
+  }
