@@ -32,3 +32,22 @@ export function myFriends() {
 export function createFriendBirthday(data) {
     return http.post('/user/jwt/create', data)
 }
+
+export function getHistoryEvents(month, day) {
+    month = ('0' + month).slice(-2)
+    day = ('0' + day).slice(-2)
+    const url = `https://baike.baidu.com/cms/home/eventsOnHistory/${month}.json?_=${new Date().getTime()}`
+    console.log(month + day)
+    return http.get(url).then(res => {
+        if (res && res.data && res.data[month]) {
+            let reg = /<\/?.+?\/?>/g;
+            let arr = res.data[month][month + day] || []
+            return arr.map(i => {
+                i.desc = i.desc.replace(reg, '')
+                i.title = i.title.replace(reg, '')
+                return i
+            })
+        }
+        return []
+    })
+}
