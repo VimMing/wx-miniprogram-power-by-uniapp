@@ -1,13 +1,37 @@
 <template>
-  <div>
-    <div class="events-container" v-if="events.length">
+  <div class="birthday-detail-page">
+    <view class="avatar--wrap">
+      <view>
+        <div
+          class="iconfont"
+          :class="'icon-' + zodiac[currentBirthday.zodiac]"
+          style="height: 100%; width: 100%"
+        >
+          <view style="opacity: 0; display: block; height: 160rpx"
+            >placeholder</view
+          >
+        </div>
+      </view>
+    </view>
+    <view class="user-name">{{ currentBirthday.name }}</view>
+    <div class="user-birthday">
+      {{ currentBirthday._birthday }}({{
+        currentBirthday.isLunar ? "农历" : "公历"
+      }})
+    </div>
+    <div class="birthday-distance">
+      <span class="distance"
+        >{{
+          currentBirthday.daysDistance == 0
+            ? "今"
+            : currentBirthday.daysDistance
+        }}天</span
+      >后是他/她的生日
+    </div>
+    <div class="events-container">
       <div id="events">
         <div class="title">
-          历史上<span class="date"
-            >{{ currentBirthday.solarBirthday.month }}月{{
-              currentBirthday.solarBirthday.day
-            }}日</span
-          >都发生了什么？
+          历史上<span class="date">她/他生日这天</span>都发生了什么？
         </div>
         <div class="events">
           <div v-for="item in events" :key="item.year">
@@ -41,6 +65,20 @@ import { storage, storageEmpty, promisify } from "@/utils";
 export default {
   data() {
     return {
+      zodiac: [
+        "mouse",
+        "cattle",
+        "tiger",
+        "rabitt",
+        "dragon",
+        "snake",
+        "horse",
+        "sheep",
+        "monkey",
+        "chicken",
+        "dog",
+        "pig",
+      ],
       events: [],
       currentBirthday: {
         solarBirthday: {
@@ -64,33 +102,49 @@ export default {
   },
 };
 </script>
-<style scoped>
+<style scoped lang="scss">
+.user-name {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+.user-birthday {
+  text-align: center;
+  margin: 12rpx 0;
+  color: #464646;
+}
+.birthday-distance {
+  text-align: center;
+  margin-bottom: 40rpx;
+  .distance {
+    color: $uni-color-primary;
+  }
+}
 #events .title {
-  padding-left: 15px;
-  /* width: 320px; */
-  height: 45px;
-  line-height: 45px;
-  font-size: 20px;
+  padding-left: 30rpx;
+  height: 90rpx;
+  line-height: 90rpx;
+  font-size: 16px;
   color: #666;
   background: #f5f5f5;
 }
 #events .events {
-  margin-left: 80px;
+  margin-left: 170rpx;
 }
 #events .events > div {
   position: relative;
   border-left: 1px solid #e1e3e6;
-  padding-bottom: 45px;
+  padding-bottom: 90rpx;
 }
 #events .events div .year {
   position: absolute;
-  left: -80px;
+  left: -160rpx;
   top: 0;
-  /* width: 120px; */
   height: 25px;
   line-height: 25px;
   color: #333;
-  font-size: 16px;
+  font-size: 14px;
   text-align: right;
 }
 #events .events div .icon {
@@ -131,5 +185,36 @@ export default {
 .icon i {
   font-size: 16px;
   color: #c2c2c2;
+}
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.avatar--wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300rpx;
+}
+.avatar--wrap > view {
+  width: 160rpx;
+  height: 160rpx;
+  padding: 10rpx;
+  border: solid 1px #eee;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#events .events > div:first-child {
+  padding-top: 40px;
+}
+#events .events > div:first-child .year {
+  margin-top: 40px;
+}
+#events .events > div:first-child .icon {
+  margin-top: 40px;
 }
 </style>
