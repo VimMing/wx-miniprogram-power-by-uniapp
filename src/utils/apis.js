@@ -38,14 +38,14 @@ export function getHistoryEvents(month, day) {
     day = ('0' + day).slice(-2)
     // const url = `https://baike.baidu.com/cms/home/eventsOnHistory/${month}.json?_=${new Date().getTime()}`
     console.log(month + day)
-    return http.get('/history/baike', {
+    return http.get('/history/getWhatHappenedFromGivenDate', {
         params: {
-            month
+            date: month+day
         }
     }).then(res => {
-        if (res && res.data && res.data[month]) {
+        if (res && res.data && res.data.events) {
             let reg = /<\/?.+?\/?>/g;
-            let arr = res.data[month][month + day] || []
+            let arr = res.data.events || []
             return arr.map(i => {
                 i.desc = i.desc.replace(reg, '')
                 i.title = i.title.replace(reg, '')

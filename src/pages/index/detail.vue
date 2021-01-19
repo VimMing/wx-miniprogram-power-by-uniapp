@@ -57,6 +57,16 @@
         </div>
       </div>
     </div>
+    <div class="operation-wrap">
+      <button open-type="share">
+        <i class="iconfont icon-wechat"></i>
+        <text>分享</text>
+      </button>
+      <button>
+        <i class="iconfont icon-add-friends"></i>
+        <text>添加</text>
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -88,12 +98,30 @@ export default {
       },
     };
   },
+  onShareAppMessage(res) {
+    if (res.from === "button") {
+      // 来自页面内转发按钮
+      console.log(res.target);
+    }
+    return {
+      title: `${this.currentBirthday.name}的生日`,
+      path: `/pages/index/detail?shareCode=${this.currentBirthday.shareCode}`,
+    };
+  },
   onLoad(options) {
+    console.log(options);
+    uni.showShareMenu({
+      withShareTicket: true,
+      menus: ["shareAppMessage", "shareTimeline"],
+    });
     if (!storageEmpty("currentBirthday")) {
       let t = storage.currentBirthday;
       let j = t.solarBirthday;
       if (t.id == options.id) {
         this.currentBirthday = storage.currentBirthday;
+        uni.setNavigationBarTitle({
+          title: `${this.currentBirthday.name}的生日`,
+        });
         getHistoryEvents(j.month, j.day).then((res) => {
           this.events = res || [];
         });
@@ -103,6 +131,44 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+$operation-wrap-height: 120rpx;
+
+.events-container {
+  padding-bottom: $operation-wrap-height;
+}
+.operation-wrap {
+  display: flex;
+  position: fixed;
+  width: 100%;
+  height: $operation-wrap-height;
+  bottom: 0;
+  border-top: 1px solid #eee;
+  i {
+    font-size: 24px;
+  }
+  .icon-wechat {
+    color: $uni-color-success;
+  }
+  .icon-add-friends {
+    color: $uni-color-primary;
+  }
+  button {
+    flex: 1;
+    border: none;
+    border-radius: 0;
+    height: 100%;
+    display: flex;
+    font-size: 14px;
+    flex-direction: column;
+    padding: 8px 0;
+    justify-content: space-between;
+    line-height: 1;
+    background: white;
+  }
+  button::after {
+    border: none;
+  }
+}
 .user-name {
   text-align: center;
   font-size: 16px;
