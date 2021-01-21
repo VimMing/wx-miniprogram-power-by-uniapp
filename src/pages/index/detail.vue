@@ -62,7 +62,7 @@
         <i class="iconfont icon-wechat"></i>
         <text>分享</text>
       </button>
-      <button>
+      <button @click="add" :loading="loading.adding">
         <i class="iconfont icon-add-friends"></i>
         <text>添加</text>
       </button>
@@ -70,11 +70,14 @@
   </div>
 </template>
 <script>
-import { getHistoryEvents } from "@/utils/apis.js";
+import { getHistoryEvents, getFriendByShareCode, addFriendByOtherManShareByJwt } from "@/utils/apis.js";
 import { storage, storageEmpty, promisify } from "@/utils";
 export default {
   data() {
     return {
+      loading: {
+        adding: false
+      },
       zodiac: [
         "mouse",
         "cattle",
@@ -108,24 +111,41 @@ export default {
       path: `/pages/index/detail?shareCode=${this.currentBirthday.shareCode}`,
     };
   },
+  methods: {
+    add(){
+      this.loading.adding = true
+      addFriendByOtherManShareByJwt(this.currentBirthday.id).finally(() => {
+        this.loading.adding = false
+      })
+    },
+    showCurrentBirthday(options) {
+      uni.showShareMenu({
+        withShareTicket: true,
+        menus: ["shareAppMessage", "shareTimeline"],
+      });
+      if (!storageEmpty("currentBirthday")) {
+        let t = storage.currentBirthday;
+        let j = t.solarBirthday;
+        if (t.id == options.id) {
+          this.currentBirthday = storage.currentBirthday;
+          getFriendByShareCode(this.currentBirthday.shareCode).then(res => {
+            console.log(res, this.currentBirthday)
+          })
+          uni.setNavigationBarTitle({
+            title: `${this.currentBirthday.name}的生日`,
+          });
+          getHistoryEvents(j.month, j.day).then((res) => {
+            this.events = res || [];
+          });
+        }
+      }
+    },
+  },
   onLoad(options) {
     console.log(options);
-    uni.showShareMenu({
-      withShareTicket: true,
-      menus: ["shareAppMessage", "shareTimeline"],
-    });
-    if (!storageEmpty("currentBirthday")) {
-      let t = storage.currentBirthday;
-      let j = t.solarBirthday;
-      if (t.id == options.id) {
-        this.currentBirthday = storage.currentBirthday;
-        uni.setNavigationBarTitle({
-          title: `${this.currentBirthday.name}的生日`,
-        });
-        getHistoryEvents(j.month, j.day).then((res) => {
-          this.events = res || [];
-        });
-      }
+    if (options.shareCode) {
+    } else {
+      this.showCurrentBirthday(options);
     }
   },
 };

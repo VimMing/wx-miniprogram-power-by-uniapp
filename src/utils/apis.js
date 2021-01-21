@@ -3,6 +3,7 @@ import Request from '@/utils/luch-request/index.js' // 下载的插件
 
 const http = new Request({
     baseURL: "https://birthday.codehub.store/api"
+    //  baseURL: "http://127.0.0.1:7001/api"
 });
 
 let token = ''
@@ -40,7 +41,7 @@ export function getHistoryEvents(month, day) {
     console.log(month + day)
     return http.get('/history/getWhatHappenedFromGivenDate', {
         params: {
-            date: month+day
+            date: month + day
         }
     }).then(res => {
         if (res && res.data && res.data.events) {
@@ -53,5 +54,32 @@ export function getHistoryEvents(month, day) {
             })
         }
         return []
+    })
+}
+
+export function getFriendByShareCode(shareCode) {
+    return http.get('/user/getFriendByShareCode', {
+        params: {
+            shareCode
+        }
+    }).then((res) => {
+        let data = res.data
+        if(data.errcode === 0){
+            return data.data
+        }else{
+            throw(data.errMessage)
+        }
+    })
+}
+
+
+
+export function addFriendByOtherManShareByJwt(id) {
+    return http.get('/user/addFriendByOtherManShareByJwt', {
+        params: {
+            id
+        }
+    }).then((res) => {
+        return res.data
     })
 }
