@@ -58,25 +58,33 @@
       </div>
     </div>
     <div class="operation-wrap">
+      <button @click="remind">
+        <i class="iconfont icon-wechat"></i>
+        <text>订阅提醒</text>
+      </button>
       <button open-type="share">
         <i class="iconfont icon-wechat"></i>
-        <text>分享</text>
+        <text>分享生日</text>
       </button>
       <button @click="add" :loading="loading.adding">
         <i class="iconfont icon-add-friends"></i>
-        <text>添加</text>
+        <text>添加生日</text>
       </button>
     </div>
   </div>
 </template>
 <script>
-import { getHistoryEvents, getFriendByShareCode, addFriendByOtherManShareByJwt } from "@/utils/apis.js";
+import {
+  getHistoryEvents,
+  getFriendByShareCode,
+  addFriendByOtherManShareByJwt,
+} from "@/utils/apis.js";
 import { storage, storageEmpty, promisify } from "@/utils";
 export default {
   data() {
     return {
       loading: {
-        adding: false
+        adding: false,
       },
       zodiac: [
         "mouse",
@@ -112,11 +120,19 @@ export default {
     };
   },
   methods: {
-    add(){
-      this.loading.adding = true
+    remind() {
+      uni.requestSubscribeMessage({
+        tmplIds: ["E3YdVL8G4BZaFJ9ORfp6-nKtRhB1oyh-HWM8zKJpjj8"],
+        success(res) {
+          console.log(res)
+        },
+      });
+    },
+    add() {
+      this.loading.adding = true;
       addFriendByOtherManShareByJwt(this.currentBirthday.id).finally(() => {
-        this.loading.adding = false
-      })
+        this.loading.adding = false;
+      });
     },
     showCurrentBirthday(options) {
       uni.showShareMenu({
@@ -128,9 +144,9 @@ export default {
         let j = t.solarBirthday;
         if (t.id == options.id) {
           this.currentBirthday = storage.currentBirthday;
-          getFriendByShareCode(this.currentBirthday.shareCode).then(res => {
-            console.log(res, this.currentBirthday)
-          })
+          getFriendByShareCode(this.currentBirthday.shareCode).then((res) => {
+            console.log(res, this.currentBirthday);
+          });
           uni.setNavigationBarTitle({
             title: `${this.currentBirthday.name}的生日`,
           });
