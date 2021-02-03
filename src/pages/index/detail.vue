@@ -28,38 +28,18 @@
         }}天</span
       >后是他/她的生日
     </div>
-    <div class="events-container">
-      <div id="events">
-        <div class="title">
-          历史上<span class="date">她/他生日这天</span>都发生了什么？
-        </div>
-        <div class="events">
-          <div v-for="item in events" :key="item.year">
-            <div class="year">
-              {{ item.year }} <span class="character">年</span>
-            </div>
-            <div class="icon">
-              <i class="iconfont icon-event" v-if="item.type === 'event'"></i>
-              <i class="iconfont icon-birth" v-if="item.type === 'birth'"></i>
-              <i class="iconfont icon-death" v-if="item.type === 'death'"></i>
-            </div>
-            <div class="event">
-              <div class="event_tit-wrapper">
-                <div class="event_tit">
-                  {{ item.title }}
-                </div>
-              </div>
-              <div class="event_cnt">
-                {{ item.desc }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <liuyuno-tabs
+      :tabData="tabs"
+      :defaultIndex="defaultIndex"
+      @tabClick="tabClick"
+    />
+    <div>
+      <events-tab :events="events" v-show="defaultIndex === 0"/>
+      <notices-tab :events="events" v-show="defaultIndex === 1"/>
     </div>
     <div class="operation-wrap">
       <button @click="remind">
-        <i class="iconfont icon-wechat"></i>
+        <i class="iconfont icon-clock"></i>
         <text>订阅提醒</text>
       </button>
       <button open-type="share">
@@ -74,15 +54,33 @@
   </div>
 </template>
 <script>
+// Hbuild
+// 15116103402@163.com
+// 123456qweR
 import {
   getHistoryEvents,
   getFriendByShareCode,
   addFriendByOtherManShareByJwt,
 } from "@/utils/apis.js";
 import { storage, storageEmpty, promisify } from "@/utils";
+import liuyunoTabs from "@/components/liuyuno-tabs/liuyuno-tabs.vue";
+import eventsTab from "@/components/detail-tabs/events.vue";
+import noticesTab from "@/components/detail-tabs/notices.vue";
 export default {
+  components: {
+    liuyunoTabs,
+    eventsTab,
+    noticesTab
+  },
   data() {
     return {
+      tabs: [
+        {
+          name: "历史时刻",
+        },
+        { name: "通知订阅" },
+      ],
+      defaultIndex: 0,
       loading: {
         adding: false,
       },
@@ -120,11 +118,14 @@ export default {
     };
   },
   methods: {
+    tabClick(item) {
+      this.defaultIndex = item;
+    },
     remind() {
       uni.requestSubscribeMessage({
         tmplIds: ["E3YdVL8G4BZaFJ9ORfp6-nKtRhB1oyh-HWM8zKJpjj8"],
         success(res) {
-          console.log(res)
+          console.log(res);
         },
       });
     },
@@ -151,7 +152,7 @@ export default {
             title: `${this.currentBirthday.name}的生日`,
           });
           getHistoryEvents(j.month, j.day).then((res) => {
-            this.events = res || [];
+            this.events = res.reverse() || [];
           });
         }
       }
@@ -188,6 +189,9 @@ $operation-wrap-height: 120rpx;
   .icon-add-friends {
     color: $uni-color-primary;
   }
+  .icon-clock {
+    color: $uni-color-warning;
+  }
   button {
     flex: 1;
     border: none;
@@ -223,67 +227,6 @@ $operation-wrap-height: 120rpx;
     color: $uni-color-primary;
   }
 }
-#events .title {
-  padding-left: 30rpx;
-  height: 90rpx;
-  line-height: 90rpx;
-  font-size: 16px;
-  color: #666;
-  background: #f5f5f5;
-}
-#events .events {
-  margin-left: 170rpx;
-}
-#events .events > div {
-  position: relative;
-  border-left: 1px solid #e1e3e6;
-  padding-bottom: 90rpx;
-}
-#events .events div .year {
-  position: absolute;
-  left: -160rpx;
-  top: 0;
-  height: 25px;
-  line-height: 25px;
-  color: #333;
-  font-size: 14px;
-  text-align: right;
-}
-#events .events div .icon {
-  position: absolute;
-  left: -18px;
-  top: -5px;
-  border: 5px solid #fff;
-  width: 25px;
-  height: 25px;
-  border-radius: 8px;
-  text-align: center;
-  background: #e5e5e5;
-}
-.event {
-  padding-top: 12px;
-}
-.event .event_tit-wrapper {
-  font-size: 16px;
-  border-top: 1px solid #e1e3e6;
-}
-.event .event_tit-wrapper .event_tit {
-  position: relative;
-  top: -13px;
-  margin-left: 35px;
-  padding-left: 5px;
-  background: #fff;
-}
-.event .event_cnt {
-  margin: -6px 0 0 40px;
-  font-size: 14px;
-  color: #999;
-  padding-right: 5px;
-}
-.events a {
-  color: #338de6;
-  text-decoration: none;
-}
 .icon i {
   font-size: 16px;
   color: #c2c2c2;
@@ -309,14 +252,5 @@ $operation-wrap-height: 120rpx;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-#events .events > div:first-child {
-  padding-top: 40px;
-}
-#events .events > div:first-child .year {
-  margin-top: 40px;
-}
-#events .events > div:first-child .icon {
-  margin-top: 40px;
 }
 </style>
