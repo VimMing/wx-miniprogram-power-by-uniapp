@@ -7,36 +7,36 @@
           :class="'icon-' + zodiac[currentBirthday.zodiac]"
           style="height: 100%; width: 100%"
         >
-          <view style="opacity: 0; display: block; height: 160rpx"
-            >placeholder</view
-          >
+          <view style="opacity: 0; display: block; height: 160rpx">placeholder</view>
         </div>
       </view>
     </view>
     <view class="user-name">{{ currentBirthday.name }}</view>
     <div class="user-birthday">
       {{ currentBirthday._birthday }}({{
-        currentBirthday.isLunar ? "农历" : "公历"
+      currentBirthday.isLunar ? "农历" : "公历"
       }})
     </div>
     <div class="birthday-distance">
-      <span class="distance"
-        >{{
-          currentBirthday.daysDistance == 0
-            ? "今"
-            : currentBirthday.daysDistance
-        }}天</span
-      >后是他/她的生日
+      <span class="distance">
+        {{
+        currentBirthday.daysDistance == 0
+        ? "今"
+        : currentBirthday.daysDistance
+        }}天
+      </span>后是他/她的生日
     </div>
     <div class="events-container">
       <div id="events">
         <div class="title">
-          历史上<span class="date">她/他生日这天</span>都发生了什么？
+          历史上
+          <span class="date">她/他生日这天</span>都发生了什么？
         </div>
         <div class="events">
           <div v-for="item in events" :key="item.year">
             <div class="year">
-              {{ item.year }} <span class="character">年</span>
+              {{ item.year }}
+              <span class="character">年</span>
             </div>
             <div class="icon">
               <i class="iconfont icon-event" v-if="item.type === 'event'"></i>
@@ -45,13 +45,9 @@
             </div>
             <div class="event">
               <div class="event_tit-wrapper">
-                <div class="event_tit">
-                  {{ item.title }}
-                </div>
+                <div class="event_tit">{{ item.title }}</div>
               </div>
-              <div class="event_cnt">
-                {{ item.desc }}
-              </div>
+              <div class="event_cnt">{{ item.desc }}</div>
             </div>
           </div>
         </div>
@@ -70,7 +66,12 @@
   </div>
 </template>
 <script>
-import { getHistoryEvents, getFriendByShareCode, addFriendByOtherManShareByJwt } from "@/utils/apis.js";
+import {
+  getHistoryEvents,
+  getFriendByShareCode,
+  myFriends,
+  addFriendByOtherManShareByJwt
+} from "@/utils/apis.js";
 import { storage, storageEmpty, promisify } from "@/utils";
 export default {
   data() {
@@ -90,15 +91,15 @@ export default {
         "monkey",
         "chicken",
         "dog",
-        "pig",
+        "pig"
       ],
       events: [],
       currentBirthday: {
         solarBirthday: {
           month: "",
-          day: "",
-        },
-      },
+          day: ""
+        }
+      }
     };
   },
   onShareAppMessage(res) {
@@ -108,46 +109,76 @@ export default {
     }
     return {
       title: `${this.currentBirthday.name}的生日`,
-      path: `/pages/index/detail?shareCode=${this.currentBirthday.shareCode}`,
+      path: `/pages/index/detail?shareCode=${this.currentBirthday.shareCode}`
     };
   },
   methods: {
-    add(){
-      this.loading.adding = true
-      addFriendByOtherManShareByJwt(this.currentBirthday.id).finally(() => {
-        this.loading.adding = false
-      })
+    add() {
+      this.loading.adding = true;
+      addFriendByOtherManShareByJwt(this.currentBirthday.id)
+        .then(res => {
+          console.log(res);
+          if (res.errcode === 0) {
+            myFriends().then(res => {
+              storage.birthdayList = res.data;
+            });
+            uni.showToast({
+              title: "添加成功",
+              duration: 2000,
+              mask: true,
+              complete: () => {
+                setTimeout(() => {
+                  uni.redirectTo({
+                    url: `/pages/index/index`
+                  });
+                }, 1500);
+              }
+            });
+          } else {
+            uni.showToast({
+              title: res.errMessage,
+              duration: 2000,
+              icon: "none"
+            });
+          }
+        })
+        .finally(() => {
+          this.loading.adding = false;
+        });
     },
     showCurrentBirthday(options) {
       uni.showShareMenu({
         withShareTicket: true,
-        menus: ["shareAppMessage", "shareTimeline"],
+        menus: ["shareAppMessage", "shareTimeline"]
       });
       if (!storageEmpty("currentBirthday")) {
         let t = storage.currentBirthday;
         let j = t.solarBirthday;
-        if (t.id == options.id) {
+        if (t.id == options.id || t.shareCode === options.shareCode) {
           this.currentBirthday = storage.currentBirthday;
-          getFriendByShareCode(this.currentBirthday.shareCode).then(res => {
-            console.log(res, this.currentBirthday)
-          })
           uni.setNavigationBarTitle({
-            title: `${this.currentBirthday.name}的生日`,
+            title: `${this.currentBirthday.name}的生日`
           });
-          getHistoryEvents(j.month, j.day).then((res) => {
+          getHistoryEvents(j.month, j.day).then(res => {
             this.events = res || [];
           });
         }
       }
-    },
+    }
   },
   onLoad(options) {
     console.log(options);
     if (options.shareCode) {
+      console.log(options.shareCode);
+      getFriendByShareCode(options.shareCode).then(res => {
+        storage.currentBirthday = res;
+        console.log(res);
+        this.showCurrentBirthday(options);
+      });
     } else {
       this.showCurrentBirthday(options);
     }
-  },
+  }
 };
 </script>
 <style scoped lang="scss">

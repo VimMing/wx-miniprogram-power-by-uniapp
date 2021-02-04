@@ -10,8 +10,7 @@
 		{
 			"path": "pages/index/detail",
 			"style": {
-				"navigationBarTitleText": "你的生日",
-				"enablePullDownRefresh": true
+				"navigationBarTitleText": "你的生日"
 			}
 		},
 		{

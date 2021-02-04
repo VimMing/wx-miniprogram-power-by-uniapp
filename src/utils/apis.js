@@ -65,7 +65,18 @@ export function getFriendByShareCode(shareCode) {
     }).then((res) => {
         let data = res.data
         if(data.errcode === 0){
-            return data.data
+            let i = data.data;
+            let today = new Date();
+            i._birthday = new Date(i.birthday).format("MM月dd日");
+            let j = i.solarBirthday;
+            i._solarBirthday = new Date(j.year, j.month - 1, j.day, 23, 59, 59);
+            if (i._solarBirthday.getTime() - today.getTime() < 0) {
+              i._solarBirthday.setYear(j.year + 1);
+            }
+            i.daysDistance = Math.floor(
+              (i._solarBirthday.getTime() - today.getTime()) / (24 * 3600 * 1000)
+            );
+            return i
         }else{
             throw(data.errMessage)
         }
@@ -80,6 +91,17 @@ export function addFriendByOtherManShareByJwt(id) {
             id
         }
     }).then((res) => {
+        return res.data
+    })
+}
+
+export function deleteFriend(id) {
+    return http.get('/user/deleteFriendByJwt', {
+        params: {
+            id
+        }
+    }).then((res) => {
+        console.log(res)
         return res.data
     })
 }
