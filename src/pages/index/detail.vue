@@ -34,8 +34,46 @@
       @tabClick="tabClick"
     />
     <div>
-      <events-tab :events="events" v-show="defaultIndex === 0"/>
-      <notices-tab :events="events" v-show="defaultIndex === 1"/>
+      <events-tab :events="events" v-show="defaultIndex === 0" />
+      <notices-tab :events="events" v-show="defaultIndex === 1" />
+    </div>
+    <div>
+      <uni-popup ref="popup" type="dialog">
+        <uni-popup-dialog
+          type="error"
+          title="提醒日期"
+          :before-close="true"
+          @close="close"
+          @confirm="confirm"
+        >
+          <view style="display: flex">
+            <span>提醒日期:</span>
+            <picker
+              @change="handleChange"
+              :range="days"
+              :value="form.day"
+              :color="$color.primary"
+              data-name="day"
+            >
+              <span class="picker">生日{{ days[form.day] }}天前</span>
+            </picker>
+          </view>
+          <view style="display: flex">
+            <span>提醒时间:</span>
+            <picker
+              mode="multiSelector"
+              @change="handleChange"
+              :range="multiArray"
+              :value="form.noticeDay"
+              :color="$color.primary"
+              data-name="noticeDay"
+            >
+              <span class="picker">{{ form._noticeDay }}</span>
+            </picker></view
+          >
+          <view>(可点击修改)</view>
+        </uni-popup-dialog>
+      </uni-popup>
     </div>
     <div class="operation-wrap">
       <button @click="remind">
@@ -64,13 +102,17 @@ import {
 } from "@/utils/apis.js";
 import { storage, storageEmpty, promisify } from "@/utils";
 import liuyunoTabs from "@/components/liuyuno-tabs/liuyuno-tabs.vue";
+import uniPopup from "@/components/uni-popup/uni-popup.vue";
+import uniPopupDialog from "@/components/uni-popup/uni-popup-dialog.vue";
 import eventsTab from "@/components/detail-tabs/events.vue";
 import noticesTab from "@/components/detail-tabs/notices.vue";
 export default {
   components: {
     liuyunoTabs,
     eventsTab,
-    noticesTab
+    noticesTab,
+    uniPopup,
+    uniPopupDialog,
   },
   data() {
     return {
@@ -98,12 +140,18 @@ export default {
         "dog",
         "pig",
       ],
+      days: [1, 3, 7],
       events: [],
       currentBirthday: {
         solarBirthday: {
           month: "",
           day: "",
         },
+      },
+      form: {
+        noticeDay: [0, 9],
+        day: 1,
+        _noticeDay: "上午10点",
       },
     };
   },
@@ -117,15 +165,76 @@ export default {
       path: `/pages/index/detail?shareCode=${this.currentBirthday.shareCode}`,
     };
   },
+  computed: {
+    multiArray() {
+      let months = new Array(12).fill(0);
+      return [["上午", "下午"], months.map((i, index) => index + 1 + "点")];
+    },
+  },
   methods: {
+    handleChange(e) {
+      let {
+        currentTarget: {
+          dataset: { name },
+        },
+        detail: { value },
+      } = e;
+      if (name === "day") {
+        this.form[name] = value;
+      }
+      if (name === "noticeDay") {
+        this.form[name] = value;
+        this.form["_" + name] = `${value[0] ? "下午" : "上午"}${
+          value[1] + 1
+        }点`;
+      }
+    },
+    /**
+     * 点击取消按钮触发
+     * @param {Object} done
+     */
+    close(done) {
+      // TODO 做一些其他的事情，before-close 为true的情况下，手动执行 done 才会关闭对话框
+      // ...
+      done();
+    },
+    /**
+     * 点击确认按钮触发
+     * @param {Object} done
+     * @param {Object} value
+     */
+    confirm(done, value) {
+      // 输入框的值
+      console.log(value);
+      let j = this.currentBirthday.solarBirthday;
+      let t = this.form.noticeDay;
+      let birthday = new Date(
+        j.year,
+        j.month - 1,
+        j.day,
+        t[0] ? (12 + t[1] + 1) % 24 : t[1] + 1
+      );
+      birthday.setDate(birthday.getDate() - this.days[this.form.day]);
+      console.log(j, birthday.format("yyyy-MM-dd HH:mm:ss"))
+      // TODO 做一些其他的事情，手动执行 done 才会关闭对话框
+      // ...
+      done();
+    },
     tabClick(item) {
       this.defaultIndex = item;
     },
     remind() {
       uni.requestSubscribeMessage({
         tmplIds: ["E3YdVL8G4BZaFJ9ORfp6-nKtRhB1oyh-HWM8zKJpjj8"],
-        success(res) {
-          console.log(res);
+        success: (res) => {
+          this.$refs.popup.open();
+        },
+        fail: (res) => {
+          uni.showToast({
+            icon: "none",
+            title: "微信信息订阅，授权失败",
+            duration: 1000,
+          });
         },
       });
     },
@@ -159,7 +268,7 @@ export default {
     },
   },
   onLoad(options) {
-    console.log(options);
+    this.$refs.popup.open();
     if (options.shareCode) {
     } else {
       this.showCurrentBirthday(options);
@@ -169,7 +278,9 @@ export default {
 </script>
 <style scoped lang="scss">
 $operation-wrap-height: 120rpx;
-
+.picker {
+  color: $uni-color-primary;
+}
 .events-container {
   padding-bottom: $operation-wrap-height;
 }
