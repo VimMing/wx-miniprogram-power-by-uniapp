@@ -2,8 +2,7 @@ import Request from '@/utils/luch-request/index.js' // 下载的插件
 // import Request from 'luch-request' // 使用npm
 
 const http = new Request({
-    baseURL: "https://birthday.codehub.store/api"
-    //  baseURL: "http://127.0.0.1:7001/api"
+    baseURL: process.env.NODE_ENV === 'development' ? "http://127.0.0.1:7001/api" : "https://birthday.codehub.store/api"
 });
 
 let token = ''
@@ -64,21 +63,21 @@ export function getFriendByShareCode(shareCode) {
         }
     }).then((res) => {
         let data = res.data
-        if(data.errcode === 0){
+        if (data.errcode === 0) {
             let i = data.data;
             let today = new Date();
             i._birthday = new Date(i.birthday).format("MM月dd日");
             let j = i.solarBirthday;
             i._solarBirthday = new Date(j.year, j.month - 1, j.day, 23, 59, 59);
             if (i._solarBirthday.getTime() - today.getTime() < 0) {
-              i._solarBirthday.setYear(j.year + 1);
+                i._solarBirthday.setYear(j.year + 1);
             }
             i.daysDistance = Math.floor(
-              (i._solarBirthday.getTime() - today.getTime()) / (24 * 3600 * 1000)
+                (i._solarBirthday.getTime() - today.getTime()) / (24 * 3600 * 1000)
             );
             return i
-        }else{
-            throw(data.errMessage)
+        } else {
+            throw (data.errMessage)
         }
     })
 }
@@ -95,13 +94,23 @@ export function addFriendByOtherManShareByJwt(id) {
     })
 }
 
+
 export function deleteFriend(id) {
     return http.get('/user/deleteFriendByJwt', {
         params: {
             id
         }
     }).then((res) => {
-        console.log(res)
+       return res
+    })
+}
+export function addBirthdayNotice(params) {
+    return http.post('/wx/addBirthdayNotice', params).then((res) => {
+        return res.data
+    })
+}
+export function birthdayNoticeList(params) {
+    return http.post('/wx/birthdayNotice/list', params).then((res) => {
         return res.data
     })
 }
