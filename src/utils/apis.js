@@ -82,3 +82,14 @@ export function addFriendByOtherManShareByJwt(id) {
         return res.data
     })
 }
+
+export function addBirthdayNotice(params) {
+    return http.post('/wx/addBirthdayNotice', params).then((res) => {
+        return res.data
+    })
+}
+export function birthdayNoticeList(params) {
+    return http.post('/wx/birthdayNotice/list', params).then((res) => {
+        return res.data
+    })
+}

@@ -99,6 +99,8 @@ import {
   getHistoryEvents,
   getFriendByShareCode,
   addFriendByOtherManShareByJwt,
+  addBirthdayNotice,
+  birthdayNoticeList
 } from "@/utils/apis.js";
 import { storage, storageEmpty, promisify } from "@/utils";
 import liuyunoTabs from "@/components/liuyuno-tabs/liuyuno-tabs.vue";
@@ -172,6 +174,11 @@ export default {
     },
   },
   methods: {
+    birthdayNoticeList(){
+      birthdayNoticeList({
+        birthdayId: this.currentBirthday.id
+      })
+    },
     handleChange(e) {
       let {
         currentTarget: {
@@ -216,6 +223,12 @@ export default {
       );
       birthday.setDate(birthday.getDate() - this.days[this.form.day]);
       console.log(j, birthday.format("yyyy-MM-dd HH:mm:ss"))
+      addBirthdayNotice({
+        when: birthday.format("yyyy-MM-dd HH:mm:ss"),
+        birthdayId: this.currentBirthday.id
+      }).then(() => {
+        this.birthdayNoticeList();
+      })
       // TODO 做一些其他的事情，手动执行 done 才会关闭对话框
       // ...
       done();
@@ -268,7 +281,6 @@ export default {
     },
   },
   onLoad(options) {
-    this.$refs.popup.open();
     if (options.shareCode) {
     } else {
       this.showCurrentBirthday(options);
