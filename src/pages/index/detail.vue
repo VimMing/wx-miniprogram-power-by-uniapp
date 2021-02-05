@@ -7,29 +7,39 @@
           :class="'icon-' + zodiac[currentBirthday.zodiac]"
           style="height: 100%; width: 100%"
         >
-          <view style="opacity: 0; display: block; height: 160rpx">placeholder</view>
+          <view style="opacity: 0; display: block; height: 160rpx"
+            >placeholder</view
+          >
         </div>
       </view>
     </view>
     <view class="user-name">{{ currentBirthday.name }}</view>
     <div class="user-birthday">
       {{ currentBirthday._birthday }}({{
-      currentBirthday.isLunar ? "农历" : "公历"
+        currentBirthday.isLunar ? "农历" : "公历"
       }})
     </div>
     <div class="birthday-distance">
       <span class="distance">
         {{
-        currentBirthday.daysDistance == 0
-        ? "今"
-        : currentBirthday.daysDistance
-        }}天
-      </span>后是他/她的生日
+          currentBirthday.daysDistance == 0
+            ? "今"
+            : currentBirthday.daysDistance
+        }}天 </span
+      >后是他/她的生日
     </div>
-    <liuyuno-tabs :tabData="tabs" :defaultIndex="defaultIndex" @tabClick="tabClick" />
+    <liuyuno-tabs
+      :tabData="tabs"
+      :defaultIndex="defaultIndex"
+      @tabClick="tabClick"
+    />
     <div>
       <events-tab :events="events" v-show="defaultIndex === 0" />
-      <notices-tab :events="events" v-show="defaultIndex === 1" />
+      <notices-tab
+        :list="notices"
+        :b="currentBirthday"
+        v-show="defaultIndex === 1"
+      />
     </div>
     <div>
       <uni-popup ref="popup" type="dialog">
@@ -109,19 +119,20 @@ export default {
     eventsTab,
     noticesTab,
     uniPopup,
-    uniPopupDialog
+    uniPopupDialog,
   },
   data() {
     return {
+      notices: [],
       tabs: [
         {
-          name: "历史时刻"
+          name: "历史时刻",
         },
-        { name: "通知订阅" }
+        { name: "通知订阅" },
       ],
       defaultIndex: 0,
       loading: {
-        adding: false
+        adding: false,
       },
       zodiac: [
         "mouse",
@@ -135,21 +146,21 @@ export default {
         "monkey",
         "chicken",
         "dog",
-        "pig"
+        "pig",
       ],
       days: [1, 3, 7],
       events: [],
       currentBirthday: {
         solarBirthday: {
           month: "",
-          day: ""
-        }
+          day: "",
+        },
       },
       form: {
         noticeDay: [0, 9],
         day: 1,
-        _noticeDay: "上午10点"
-      }
+        _noticeDay: "上午10点",
+      },
     };
   },
   onShareAppMessage(res) {
@@ -159,23 +170,23 @@ export default {
     }
     return {
       title: `${this.currentBirthday.name}的生日`,
-      path: `/pages/index/detail?shareCode=${this.currentBirthday.shareCode}`
+      path: `/pages/index/detail?shareCode=${this.currentBirthday.shareCode}`,
     };
   },
   computed: {
     multiArray() {
       let months = new Array(12).fill(0);
       return [["上午", "下午"], months.map((i, index) => index + 1 + "点")];
-    }
+    },
   },
   methods: {
     add() {
       this.loading.adding = true;
       addFriendByOtherManShareByJwt(this.currentBirthday.id)
-        .then(res => {
+        .then((res) => {
           console.log(res);
           if (res.errcode === 0) {
-            myFriends().then(res => {
+            myFriends().then((res) => {
               storage.birthdayList = res.data;
             });
             uni.showToast({
@@ -185,16 +196,16 @@ export default {
               complete: () => {
                 setTimeout(() => {
                   uni.redirectTo({
-                    url: `/pages/index/index`
+                    url: `/pages/index/index`,
                   });
                 }, 1500);
-              }
+              },
             });
           } else {
             uni.showToast({
               title: res.errMessage,
               duration: 2000,
-              icon: "none"
+              icon: "none",
             });
           }
         })
@@ -203,24 +214,33 @@ export default {
         });
     },
     birthdayNoticeList() {
-      birthdayNoticeList({
-        birthdayId: this.currentBirthday.id
+      return birthdayNoticeList({
+        birthdayId: this.currentBirthday.id,
+      }).then((res) => {
+        console.log(res);
+        let data = res.data || [];
+        data.forEach(
+          (i) => (i._when = new Date(i.when).format("yyyy-MM-dd HH点"))
+        );
+        this.notices = data.reverse();
+        return this.notices
       });
     },
     handleChange(e) {
       let {
         currentTarget: {
-          dataset: { name }
+          dataset: { name },
         },
-        detail: { value }
+        detail: { value },
       } = e;
       if (name === "day") {
         this.form[name] = value;
       }
       if (name === "noticeDay") {
         this.form[name] = value;
-        this.form["_" + name] = `${value[0] ? "下午" : "上午"}${value[1] +
-          1}点`;
+        this.form["_" + name] = `${value[0] ? "下午" : "上午"}${
+          value[1] + 1
+        }点`;
       }
     },
     /**
@@ -252,9 +272,11 @@ export default {
       console.log(j, birthday.format("yyyy-MM-dd HH:mm:ss"));
       addBirthdayNotice({
         when: birthday.format("yyyy-MM-dd HH:mm:ss"),
-        birthdayId: this.currentBirthday.id
+        birthdayId: this.currentBirthday.id,
       }).then(() => {
-        this.birthdayNoticeList();
+        this.birthdayNoticeList().then(() => {
+          this.defaultIndex = 1;
+        });
       });
       // TODO 做一些其他的事情，手动执行 done 才会关闭对话框
       // ...
@@ -266,16 +288,16 @@ export default {
     remind() {
       uni.requestSubscribeMessage({
         tmplIds: ["E3YdVL8G4BZaFJ9ORfp6-nKtRhB1oyh-HWM8zKJpjj8"],
-        success: res => {
+        success: (res) => {
           this.$refs.popup.open();
         },
-        fail: res => {
+        fail: (res) => {
           uni.showToast({
             icon: "none",
             title: "微信信息订阅，授权失败",
-            duration: 1000
+            duration: 1000,
           });
-        }
+        },
       });
     },
     add() {
@@ -287,7 +309,7 @@ export default {
     showCurrentBirthday(options) {
       uni.showShareMenu({
         withShareTicket: true,
-        menus: ["shareAppMessage", "shareTimeline"]
+        menus: ["shareAppMessage", "shareTimeline"],
       });
       if (!storageEmpty("currentBirthday")) {
         let t = storage.currentBirthday;
@@ -295,26 +317,27 @@ export default {
         if (t.id == options.id || t.shareCode === options.shareCode) {
           this.currentBirthday = storage.currentBirthday;
           uni.setNavigationBarTitle({
-            title: `${this.currentBirthday.name}的生日`
+            title: `${this.currentBirthday.name}的生日`,
           });
-          getHistoryEvents(j.month, j.day).then(res => {
+          getHistoryEvents(j.month, j.day).then((res) => {
             this.events = res.reverse() || [];
           });
         }
       }
-    }
+    },
   },
   onLoad(options) {
     if (options.shareCode) {
       console.log(options.shareCode);
-      getFriendByShareCode(options.shareCode).then(res => {
+      getFriendByShareCode(options.shareCode).then((res) => {
         storage.currentBirthday = res;
         this.showCurrentBirthday(options);
       });
     } else {
       this.showCurrentBirthday(options);
     }
-  }
+    this.birthdayNoticeList();
+  },
 };
 </script>
 <style scoped lang="scss">
@@ -331,6 +354,7 @@ $operation-wrap-height: 120rpx;
   width: 100%;
   height: $operation-wrap-height;
   bottom: 0;
+  z-index: 1;
   border-top: 1px solid #eee;
   i {
     font-size: 24px;
