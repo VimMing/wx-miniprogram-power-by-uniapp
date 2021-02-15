@@ -1,10 +1,8 @@
 <template>
   <div class="birthday-detail-page">
     <view class="avatar--wrap">
-      <view>
+      <view class="iconfont" :class="'icon-' + zodiac[currentBirthday.zodiac]">
         <div
-          class="iconfont"
-          :class="'icon-' + zodiac[currentBirthday.zodiac]"
           style="height: 100%; width: 100%"
         >
           <view style="opacity: 0; display: block; height: 160rpx"
@@ -32,6 +30,7 @@
       :tabData="tabs"
       :defaultIndex="defaultIndex"
       @tabClick="tabClick"
+      ref="tab"
     />
     <div>
       <events-tab :events="events" v-show="defaultIndex === 0" />
@@ -195,7 +194,7 @@ export default {
               mask: true,
               complete: () => {
                 setTimeout(() => {
-                  uni.redirectTo({
+                  uni.switchTab({
                     url: `/pages/index/index`,
                   });
                 }, 1500);
@@ -276,6 +275,7 @@ export default {
       }).then(() => {
         this.birthdayNoticeList().then(() => {
           this.defaultIndex = 1;
+          this.$refs.tab.tabClick(this.defaultIndex)
         });
       });
       // TODO 做一些其他的事情，手动执行 done 才会关闭对话框
@@ -298,12 +298,6 @@ export default {
             duration: 1000,
           });
         },
-      });
-    },
-    add() {
-      this.loading.adding = true;
-      addFriendByOtherManShareByJwt(this.currentBirthday.id).finally(() => {
-        this.loading.adding = false;
       });
     },
     showCurrentBirthday(options) {

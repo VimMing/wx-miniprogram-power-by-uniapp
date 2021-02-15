@@ -10,8 +10,7 @@
           @longTap="handleLongTapDelete(item)"
           @longpress="handleLongTapDelete(item)"
         >
-          <view class="avatar-wrap">
-            <view class="avatar iconfont" :class="'icon-' + zodiac[item.zodiac]"></view>
+          <view class="avatar-wrap iconfont" :class="'icon-' + zodiac[item.zodiac]">
           </view>
           <view class="birthday-content">
             <view class="name-birthday-wrap">
@@ -237,10 +236,7 @@ export default {
     margin-right: 10px;
     width: 80rpx;
     height: 80rpx;
-  }
-  .avatar {
-    width: 100%;
-    height: 100%;
+    overflow: hidden;
   }
   padding: 10px 30rpx;
 }
