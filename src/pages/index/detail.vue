@@ -32,6 +32,7 @@
       :tabData="tabs"
       :defaultIndex="defaultIndex"
       @tabClick="tabClick"
+      ref="tabs"
     />
     <div>
       <events-tab :events="events" v-show="defaultIndex === 0" />
@@ -210,6 +211,7 @@ export default {
           }
         })
         .finally(() => {
+          // console.log("hello");
           this.loading.adding = false;
         });
     },
@@ -217,13 +219,13 @@ export default {
       return birthdayNoticeList({
         birthdayId: this.currentBirthday.id,
       }).then((res) => {
-        console.log(res);
+        // console.log(res);
         let data = res.data || [];
         data.forEach(
           (i) => (i._when = new Date(i.when).format("yyyy-MM-dd HH点"))
         );
         this.notices = data.reverse();
-        return this.notices
+        return this.notices;
       });
     },
     handleChange(e) {
@@ -259,7 +261,7 @@ export default {
      */
     confirm(done, value) {
       // 输入框的值
-      console.log(value);
+      // console.log(value);
       let j = this.currentBirthday.solarBirthday;
       let t = this.form.noticeDay;
       let birthday = new Date(
@@ -269,13 +271,14 @@ export default {
         t[0] ? (12 + t[1] + 1) % 24 : t[1] + 1
       );
       birthday.setDate(birthday.getDate() - this.days[this.form.day]);
-      console.log(j, birthday.format("yyyy-MM-dd HH:mm:ss"));
+      // console.log(j, birthday.format("yyyy-MM-dd HH:mm:ss"));
       addBirthdayNotice({
         when: birthday.format("yyyy-MM-dd HH:mm:ss"),
         birthdayId: this.currentBirthday.id,
       }).then(() => {
         this.birthdayNoticeList().then(() => {
           this.defaultIndex = 1;
+          this.$refs.tabs.tabClick(this.defaultIndex);
         });
       });
       // TODO 做一些其他的事情，手动执行 done 才会关闭对话框
@@ -298,12 +301,6 @@ export default {
             duration: 1000,
           });
         },
-      });
-    },
-    add() {
-      this.loading.adding = true;
-      addFriendByOtherManShareByJwt(this.currentBirthday.id).finally(() => {
-        this.loading.adding = false;
       });
     },
     showCurrentBirthday(options) {

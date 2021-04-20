@@ -37,7 +37,7 @@ export function getHistoryEvents(month, day) {
     month = ('0' + month).slice(-2)
     day = ('0' + day).slice(-2)
     // const url = `https://baike.baidu.com/cms/home/eventsOnHistory/${month}.json?_=${new Date().getTime()}`
-    console.log(month + day)
+    // console.log(month + day)
     return http.get('/history/getWhatHappenedFromGivenDate', {
         params: {
             date: month + day
