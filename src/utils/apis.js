@@ -2,7 +2,8 @@ import Request from '@/utils/luch-request/index.js' // 下载的插件
 // import Request from 'luch-request' // 使用npm
 
 const http = new Request({
-    baseURL: process.env.NODE_ENV === 'development' ? "http://127.0.0.1:7001/api" : "https://birthday.codehub.store/api"
+    baseURL: "https://birthday.codehub.store/api"
+    // baseURL: process.env.NODE_ENV === 'development' ? "http://127.0.0.1:7001/api" : "https://birthday.codehub.store/api"
 });
 
 let token = ''

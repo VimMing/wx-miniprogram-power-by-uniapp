@@ -18,12 +18,44 @@
 			"style": {
 				"navigationBarTitleText": "编辑生日资料"
 			}
+		},
+		{
+			"path": "pages/my/index",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/my/about",
+			"style": {
+				"navigationBarTitleText": "关于"
+			}
 		}
 	],
 	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#ffffff",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "生日备忘本",
+		"navigationBarBackgroundColor": "#1A237E",
+		"backgroundColor": "#1A237E"
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#1A237E",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/tabIcon/community.png",
+				"selectedIconPath": "static/tabIcon/communityActive.png",
+				"text": "生日"
+			},
+			{
+				"pagePath": "pages/my/index",
+				"iconPath": "static/tabIcon/tool.png",
+				"selectedIconPath": "static/tabIcon/toolActive.png",
+				"text": "我的"
+			}
+		]
 	}
 }

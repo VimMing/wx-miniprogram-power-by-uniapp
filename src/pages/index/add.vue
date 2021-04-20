@@ -1,10 +1,8 @@
 <template>
   <view class="birthday--edit--page">
     <view class="avatar--wrap">
-      <view>
+      <view class="iconfont" :class="'icon-' + form.zodiac">
         <picker
-          class="iconfont"
-          :class="'icon-' + form.zodiac"
           style="height: 100%;width: 100%;"
           :range="chineseZodiac"
           :value="zodiacActiveIndex"

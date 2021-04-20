@@ -36,6 +36,11 @@ export default {
     console.log("App Hide");
   },
 };
+
+		// "navigationBarTextStyle": "black",
+		// "navigationBarTitleText": "uni-app",
+		// "navigationBarBackgroundColor": "#ffffff",
+		// "backgroundColor": "#F8F8F8"
 </script>
 
 <style lang="scss">
@@ -45,7 +50,7 @@ export default {
   float: right;
 }
 view {
-  color: #808080;
+  color: inherit;
   font-size: 16px;
 }
 uni-button[type="primary"][plain] {
