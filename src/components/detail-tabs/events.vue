@@ -86,7 +86,7 @@ $operation-wrap-height: 120rpx;
   height: 25px;
   border-radius: 8px;
   text-align: center;
-  background: #e5e5e5;
+  background: rgba(229, 229, 229, 0.21);
 }
 .event {
   padding-top: 12px;
@@ -114,7 +114,6 @@ $operation-wrap-height: 120rpx;
 }
 .icon i {
   font-size: 16px;
-  color: #c2c2c2;
 }
 .icon {
   display: flex;
@@ -146,5 +145,11 @@ $operation-wrap-height: 120rpx;
 }
 .events-container .events > div:first-child .icon {
   margin-top: 40px;
+}
+.icon-event{
+  color: $uni-color-warning;
+}
+.icon-birth{
+  color: $uni-color-success;
 }
 </style>

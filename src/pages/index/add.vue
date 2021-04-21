@@ -91,8 +91,6 @@
       </view>
     </view>
     <view class="submit--wrap">
-      <!-- @getphonenumber="handleSave" -->
-      <!-- open-type="getPhoneNumber" -->
       <button :loading="loading" plain @click="handleSave">保存</button>
     </view>
   </view>
@@ -139,7 +137,7 @@ export default {
         sex: -1, // 0 boy , 1 girl
         birthday: "", // month-day
         type: 0, // 0: false, 1: true 公历还是农历
-        zodiac: ""
+        zodiac: "picker"
       },
       zodiacActiveIndex: "",
       genders: [
@@ -153,10 +151,19 @@ export default {
       ]
     };
   },
-  onLoad() {
+  onLoad(options) {
     let today = new Date();
     this.zodiacActiveIndex = (today.getFullYear() - 1996) % 12;
-    this.form.zodiac = this.zodiac[this.zodiacActiveIndex];
+    // this.form.zodiac = this.zodiac[this.zodiacActiveIndex];
+    if(options.id){
+      let temp = storage.currentBirthday;
+      this.form = temp;
+      this.zodiacActiveIndex = this.form.zodiac;
+      this.form.zodiac = this.zodiac[this.zodiacActiveIndex];
+      this.form.type = Number(this.form.isLunar);
+      this.form.birthday = new Date(this.form.birthday).format("MM-dd");
+      console.log(this.form);
+    }
   },
   computed: {
     multiSelect() {
@@ -199,10 +206,11 @@ export default {
       this.loading = true;
       try {
         createFriendBirthday({
+          id: this.form.id,
           name: this.form.name,
           zodiac: +this.zodiacActiveIndex,
           birthday: "2021-" + this.form.birthday,
-          isLunar: Boolean(this.form.type)
+          isLunar: Boolean(+this.form.type)
         })
           .then(() => {
             myFriends()
@@ -248,7 +256,7 @@ export default {
       }
       if (name === "birthday") {
         this.form[name] = value.map(i => ("0" + (i + 1)).slice(-2)).join("-");
-        this.form["_" + name] = value[0] + 1 + "月" + (value[1] + 1) + "日";
+        this.form["_" + name] = (value[0] + 1) + "月" + (value[1] + 1) + "日";
       }
       if (name === "zodiac") {
         this.form.zodiac = this.zodiac[value];

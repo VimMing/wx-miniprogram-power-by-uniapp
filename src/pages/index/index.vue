@@ -2,37 +2,41 @@
   <view>
     <view v-if="len">
       <view class="birthday-list-wrap">
-        <view
-          class="birthday-item"
-          v-for="(item, index) in l"
-          :key="index"
-          @tap="showDetail(item)"
-          @longTap="handleLongTapDelete(item)"
-          @longpress="handleLongTapDelete(item)"
-        >
-          <view class="avatar-wrap iconfont" :class="'icon-' + zodiac[item.zodiac]">
-          </view>
-          <view class="birthday-content">
-            <view class="name-birthday-wrap">
-              <text class="name">{{ item.name }}</text>
-              <text class="birthday">
-                {{ item._birthday }}({{
-                item.isLunar ? "农历" : "公历"
-                }})
-              </text>
-            </view>
-            <view class="next-birthday-wrap">
+        <uni-swipe-action>
+          <uni-swipe-action-item
+            :right-options="options"
+            @click="bindClick"
+            @change="swipeChange($event, index)"
+            v-for="(item, index) in l"
+            :key="index"
+          >
+            <view class="birthday-item" @tap="showDetail(item)">
               <view
-                class="next-birthday-distance"
-              >{{ item.daysDistance == 0 ? "今" : item.daysDistance }}日</view>
-              <view class="next-birthday-day">
-                距下次生日{{
-                item._solarBirthday.format("yyyy年MM月dd日")
-                }}
+                class="avatar-wrap iconfont"
+                :class="'icon-' + zodiac[item.zodiac]"
+              >
+              </view>
+              <view class="birthday-content">
+                <view class="name-birthday-wrap">
+                  <text class="name">{{ item.name }}</text>
+                  <text class="birthday">
+                    {{ item._birthday }}({{ item.isLunar ? "农历" : "公历" }})
+                  </text>
+                </view>
+                <view class="next-birthday-wrap">
+                  <view class="next-birthday-distance"
+                    >{{
+                      item.daysDistance == 0 ? "今" : item.daysDistance
+                    }}日</view
+                  >
+                  <view class="next-birthday-day">
+                    距下次生日{{ item._solarBirthday.format("yyyy年MM月dd日") }}
+                  </view>
+                </view>
               </view>
             </view>
-          </view>
-        </view>
+          </uni-swipe-action-item>
+        </uni-swipe-action>
       </view>
       <uni-fab
         :pattern="pattern"
@@ -55,16 +59,37 @@
 
 <script>
 import uniFab from "@/components/uni-fab/uni-fab.vue";
+import uniSwipeActionItem from "@/components/uni-swipe-action-item/uni-swipe-action-item.vue";
+import uniSwipeAction from "@/components/uni-swipe-action/uni-swipe-action.vue";
 import { wxGetToken, myFriends, deleteFriend } from "@/utils/apis.js";
 import { storage, storageEmpty, promisify } from "@/utils";
 export default {
   components: {
-    uniFab
+    uniFab,
+    uniSwipeActionItem,
+    uniSwipeAction,
   },
   data() {
     return {
       title: "Hello, 点击下面的按钮添加生日备忘^_^",
+      swipeActiveItemIndex: -1,
       list: [],
+      options: [
+        {
+          text: "编辑",
+          opt: "edit",
+          style: {
+            backgroundColor: "#1A237E",
+          },
+        },
+        {
+          text: "删除",
+          opt: "delete",
+          style: {
+            backgroundColor: "#ff272e",
+          },
+        },
+      ],
       zodiac: [
         "mouse",
         "cattle",
@@ -77,15 +102,15 @@ export default {
         "monkey",
         "chicken",
         "dog",
-        "pig"
+        "pig",
       ],
       pattern: {
         color: "white",
         selectedColor: "",
         backgroundColor: this.$color.primary,
-        buttonColor: this.$color.primary
+        buttonColor: this.$color.primary,
       },
-      content: [{ text: "手动填写", iconPath: "/static/icons/manualPen.png" }]
+      content: [{ text: "手动填写", iconPath: "/static/icons/pen.png" }],
     };
   },
   computed: {
@@ -95,7 +120,7 @@ export default {
     l() {
       let res = [];
       let today = new Date();
-      res = this.list.map(item => {
+      res = this.list.map((item) => {
         let i = { ...item };
         i._birthday = new Date(i.birthday).format("MM月dd日");
         let j = i.solarBirthday;
@@ -110,7 +135,7 @@ export default {
       });
       res.sort((i, j) => i.daysDistance - j.daysDistance);
       return res;
-    }
+    },
   },
   onPullDownRefresh() {
     console.log("refresh");
@@ -118,10 +143,10 @@ export default {
   },
   onLoad() {
     promisify(uni.login)({
-      provider: "weixin"
+      provider: "weixin",
     }).then(({ code }) => {
-      wxGetToken(code).then(res => {
-        myFriends().then(res => {
+      wxGetToken(code).then((res) => {
+        myFriends().then((res) => {
           this.list = res.data || [];
           storage.birthdayList = res.data;
         });
@@ -135,9 +160,25 @@ export default {
     }
   },
   methods: {
+    bindClick({ content: { opt } }) {
+      // console.log(opt);
+      const item = this.l[this.swipeActiveItemIndex];
+      if (opt === "delete") {
+        this.handleLongTapDelete(item);
+      } else {
+        storage.currentBirthday = item;
+        uni.navigateTo({
+          url: `add?id=${item.id}`,
+        });
+      }
+    },
+    swipeChange(e, index) {
+      // console.log(e, index);
+      this.swipeActiveItemIndex = index;
+    },
     refresh() {
       myFriends()
-        .then(res => {
+        .then((res) => {
           this.list = res.data || [];
           storage.birthdayList = res.data;
         })
@@ -148,19 +189,19 @@ export default {
     handleLongTapDelete(item) {
       promisify(uni.showModal)({
         title: "删除确认",
-        content: `确定删除${item.name}的生日？`
-      }).then(res => {
+        content: `确定删除${item.name}的生日？`,
+      }).then((res) => {
         if (res.confirm) {
           console.log("用户点击确定");
           deleteFriend(item.id)
-            .then(res => {
+            .then((res) => {
               this.refresh();
             })
-            .catch(e => {
+            .catch((e) => {
               uni.showToast({
                 title: "删除功能，正在开发....",
                 duration: 2000,
-                icon: "none"
+                icon: "none",
               });
             });
         } else if (res.cancel) {
@@ -171,27 +212,37 @@ export default {
     showDetail(item) {
       storage.currentBirthday = item;
       uni.navigateTo({
-        url: `/pages/index/detail?id=${item.id}`
+        url: `/pages/index/detail?id=${item.id}`,
       });
     },
     trigger(e) {
       console.log(e);
       uni.navigateTo({
-        url: "add"
+        url: "add",
       });
     },
     handleAdd() {
       uni.navigateTo({
-        url: "add"
+        url: "add",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
 
 <style lang="scss" scoped>
+.birthday-list-wrap::after {
+  content: "已经到底了~";
+  position: absolute;
+  display: block;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  color: $uni-text-color-disable;
+}
 .birthday-list-wrap {
+  position: relative;
   .birthday-content {
     display: flex;
     justify-content: space-between;
@@ -239,6 +290,7 @@ export default {
     overflow: hidden;
   }
   padding: 10px 30rpx;
+  padding-bottom: 100px;
 }
 .content {
   display: flex;

@@ -1,6 +1,13 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+			"path": "pages/my/today",
+			"style": {
+				"navigationBarTitleText": "Today",
+				"enablePullDownRefresh": true
+			}
+		},
+		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "生日备忘本",
@@ -49,6 +56,12 @@
 				"iconPath": "static/tabIcon/community.png",
 				"selectedIconPath": "static/tabIcon/communityActive.png",
 				"text": "生日"
+			},
+			{
+				"pagePath": "pages/my/today",
+				"iconPath": "static/tabIcon/today.png",
+				"selectedIconPath": "static/tabIcon/todayActive.png",
+				"text": ""
 			},
 			{
 				"pagePath": "pages/my/index",
