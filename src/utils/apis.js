@@ -108,6 +108,11 @@ export function addBirthdayNotice(params) {
         return res.data
     })
 }
+
+export function updateUserInfo(params) {
+    return http.post('/user/updateUserInfo', params)
+}
+
 export function birthdayNoticeList(params) {
     return http.post('/wx/birthdayNotice/list', params).then((res) => {
         return res.data
