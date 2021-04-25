@@ -38,7 +38,6 @@
 		<!-- 底部 -->
 		<view v-if="note" class="uni-card__footer uni-border-top">
 			<slot name="footer">
-				<text class="uni-card__footer-text">{{ note }}</text>
 			</slot>
 		</view>
 	</view>
@@ -79,8 +78,8 @@
 				default: ''
 			},
 			note: {
-				type: String,
-				default: ''
+				type: Boolean,
+				default: false
 			},
 			thumbnail: {
 				type: String,

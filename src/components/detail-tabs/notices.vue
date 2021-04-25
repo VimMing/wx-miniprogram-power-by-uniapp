@@ -6,18 +6,17 @@
         v-for="item in list"
         :key="item.id"
         :extra="item.status === 0 ? '未完成' : '已完成'"
+        :note="item.status === 1"
       >
         <div>
           生日日期: {{ new Date(b._solarBirthday).format("yyyy年MM月dd日") }}
         </div>
         <div>提醒日期: {{ item._when }}</div>
-        <!-- <template v-slot:footer> -->
-        <!-- <view class="footer-box">
-            <view>喜欢</view>
-            <view>评论</view>
-            <view>分享</view>
-          </view> -->
-        <!-- </template> -->
+        <template v-slot:footer>
+          <button @click="remind(item)" plain>
+            <text>再次订阅</text>
+          </button>
+        </template>
       </uni-card>
     </div>
     <div class="empty-holder" v-else>hello, 请点击左下方的《订阅提醒》添加</div>
@@ -26,6 +25,7 @@
 
 <script>
 import uniCard from "@/components/uni-card/uni-card.vue";
+import { activeNoticeAgain } from "@/utils/apis.js";
 export default {
   components: {
     uniCard,
@@ -46,7 +46,28 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    remind(item) {
+      uni.requestSubscribeMessage({
+        tmplIds: ["E3YdVL8G4BZaFJ9ORfp6-nKtRhB1oyh-HWM8zKJpjj8"],
+        success: (res) => {
+          console.log(item);
+          activeNoticeAgain({
+            id: item.id
+          }).then(() => {
+            this.$emit("refresh");
+          })
+        },
+        fail: (res) => {
+          uni.showToast({
+            icon: "none",
+            title: "微信信息订阅，授权失败",
+            duration: 1000,
+          });
+        },
+      });
+    },
+  },
 };
 </script>
 

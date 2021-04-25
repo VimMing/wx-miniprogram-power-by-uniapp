@@ -84,7 +84,7 @@ export default {
             this.userInfo = res[1]["userInfo"];
             console.log(this.userInfo);
             updateUserInfo(this.userInfo);
-            this.$loginUser.avatarUrl = this.userInfo.avatarUrl;
+            this.$loginUser = this.userInfo;
           } else {
             throw res;
           }

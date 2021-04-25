@@ -38,6 +38,7 @@
         :list="notices"
         :b="currentBirthday"
         v-show="defaultIndex === 1"
+        @refresh="birthdayNoticeList"
       />
     </div>
     <div>
