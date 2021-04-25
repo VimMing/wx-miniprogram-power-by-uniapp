@@ -48,25 +48,8 @@ export default {
   },
   methods: {
     remind(item) {
-      uni.requestSubscribeMessage({
-        tmplIds: ["E3YdVL8G4BZaFJ9ORfp6-nKtRhB1oyh-HWM8zKJpjj8"],
-        success: (res) => {
-          console.log(item);
-          activeNoticeAgain({
-            id: item.id
-          }).then(() => {
-            this.$emit("refresh");
-          })
-        },
-        fail: (res) => {
-          uni.showToast({
-            icon: "none",
-            title: "微信信息订阅，授权失败",
-            duration: 1000,
-          });
-        },
-      });
-    },
+      this.$emit("remindAgain", item)
+    }
   },
 };
 </script>

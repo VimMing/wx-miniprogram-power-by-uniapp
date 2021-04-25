@@ -38,7 +38,7 @@
         :list="notices"
         :b="currentBirthday"
         v-show="defaultIndex === 1"
-        @refresh="birthdayNoticeList"
+        @remindAgain="remindAgain"
       />
     </div>
     <div>
@@ -123,6 +123,7 @@ export default {
   },
   data() {
     return {
+      updateSubscriptionId: "",
       notices: [],
       tabs: [
         {
@@ -215,6 +216,7 @@ export default {
         });
     },
     birthdayNoticeList() {
+      this.updateSubscriptionId = "";
       return birthdayNoticeList({
         birthdayId: this.currentBirthday.id,
       }).then((res) => {
@@ -261,17 +263,20 @@ export default {
     confirm(done, value) {
       // 输入框的值
       // console.log(value);
-      let j = this.currentBirthday.solarBirthday;
+      console.log(this.currentBirthday._solarBirthday)
+      let j = new Date(this.currentBirthday._solarBirthday);
+      console.log(j);
       let t = this.form.noticeDay;
       let birthday = new Date(
-        j.year,
-        j.month - 1,
-        j.day,
+        j.getFullYear(),
+        j.getMonth(),
+        j.getDate(),
         t[0] ? (12 + t[1] + 1) % 24 : t[1] + 1
       );
       birthday.setDate(birthday.getDate() - this.days[this.form.day]);
       // console.log(j, birthday.format("yyyy-MM-dd HH:mm:ss"));
       addBirthdayNotice({
+        id: this.updateSubscriptionId,
         when: birthday.format("yyyy-MM-dd HH:mm:ss"),
         birthdayId: this.currentBirthday.id,
       }).then(() => {
@@ -301,6 +306,10 @@ export default {
           });
         },
       });
+    },
+    remindAgain(item){
+      this.updateSubscriptionId = item.id;
+      this.remind();
     },
     showCurrentBirthday(options) {
       uni.showShareMenu({
