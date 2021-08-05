@@ -23,6 +23,10 @@ export default {
     };
   },
   onLoad() {
+    uni.showShareMenu({
+      withShareTicket: true,
+      menus: ["shareAppMessage", "shareTimeline"],
+    });
     this.loading = true;
     uni.downloadFile({
       url: "https://codehub.store/douban/today.png",
@@ -80,7 +84,7 @@ export default {
 }
 .cube1,
 .cube2 {
-  background-color:$uni-color-primary;
+  background-color: $uni-color-primary;
   width: 15px;
   height: 15px;
   position: absolute;
@@ -95,7 +99,7 @@ export default {
   -webkit-animation-delay: -0.9s;
   animation-delay: -0.9s;
 }
-.loadingText{
+.loadingText {
   position: absolute;
   top: 60%;
   left: 50%;
