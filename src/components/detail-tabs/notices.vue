@@ -6,7 +6,7 @@
         v-for="item in list"
         :key="item.id"
         :extra="item.status === 0 ? '未完成' : '已完成'"
-        :note="item.status === 1"
+        :note="item.status === 1 || noticeAgainWhenNoticeDayLessThanNow(item)"
       >
         <div>
           生日日期: {{ new Date(b._solarBirthday).format("yyyy年MM月dd日") }}
@@ -49,6 +49,12 @@ export default {
   methods: {
     remind(item) {
       this.$emit("remindAgain", item)
+    },
+    noticeAgainWhenNoticeDayLessThanNow(item){
+      if((new Date(item.when)).getTime() < new Date().getTime()){
+        return true;
+      }
+      return false;
     }
   },
 };

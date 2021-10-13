@@ -73,7 +73,7 @@ export default {
     };
   },
   onLoad() {
-    this.getUserInfo();
+    // this.getUserInfo();
   },
   methods: {
     getUserInfo(e) {
@@ -82,7 +82,7 @@ export default {
         .then((res) => {
           if (res && res[1] && res[1]["userInfo"]) {
             this.userInfo = res[1]["userInfo"];
-            console.log(this.userInfo);
+            // console.log(this.userInfo);
             updateUserInfo(this.userInfo);
             this.$loginUser = this.userInfo;
           } else {
