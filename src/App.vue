@@ -3,10 +3,9 @@ import { wxGetToken } from "@/utils/apis.js";
 import { promisify } from "@/utils";
 export default {
   globalData: {
-    isRequestToken: false
+    isRequestToken: false,
   },
   onLaunch: function () {
-
     const updateManager = uni.getUpdateManager();
 
     updateManager.onCheckForUpdate(function (res) {
@@ -34,8 +33,7 @@ export default {
       provider: "weixin",
     }).then(({ code }) => {
       wxGetToken(code).finally(() => {
-        this.globalData.isRequestToken = true
-        console.log(this.globalData)
+        this.globalData.isRequestToken = true;
       });
     });
   },
@@ -43,7 +41,6 @@ export default {
     console.log("App Hide");
   },
 };
-
 </script>
 
 <style lang="scss">

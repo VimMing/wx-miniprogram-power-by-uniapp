@@ -4,41 +4,32 @@
       <view class="person-info flex-space-between flex-align-center">
         <view class="info flex-align-center">
           <view class="ma-10-r">
-            <image
-              class="avatar"
-              :src="userInfo.avatarUrl"
-              v-if="userInfo.avatarUrl"
-            ></image>
+            <image class="avatar" :src="userInfo.avatarUrl" v-if="userInfo.avatarUrl" />
             <view class="avatar" v-else>V</view>
           </view>
           <view class="info-text-wrapper" v-if="userInfo.avatarUrl">
             <view>{{ userInfo.nickName }}</view>
             <view>{{ userInfo.province }} {{ userInfo.city }}</view>
           </view>
-          <view class="no-info-text-wrapper" v-else
-            ><button
+          <view class="no-info-text-wrapper" v-else>
+            <button
               class="getInfo"
               open-type="getUserInfo"
               @getuserinfo="getUserInfo"
-            >
-              获取头像
-            </button></view
-          >
+              v-if="!isGetUserProfileCanUse"
+            >获取头像</button>
+            <button class="getInfo" @click="getUserInfo" v-else>获取头像</button>
+          </view>
         </view>
-        <view class="goto-wrapper flex-align-center"
-          ><uni-icon type="forward" color="white"></uni-icon
-        ></view>
+        <view class="goto-wrapper flex-align-center">
+          <uni-icon type="forward" color="white"></uni-icon>
+        </view>
       </view>
       <view class="staticstic"></view>
     </view>
     <view class="tool-menu-title">工具</view>
     <view class="tool-menu-body">
-      <uni-grid
-        :column="3"
-        :show-border="false"
-        :square="false"
-        @change="change"
-      >
+      <uni-grid :column="3" :show-border="false" :square="false" @change="change">
         <uni-grid-item>
           <image
             class="image"
@@ -74,17 +65,38 @@ export default {
     };
   },
   onLoad() {
-    // this.getUserInfo();
     if (!storageEmpty("userInfo")) {
       this.userInfo = storage.userInfo
     }
   },
+  computed: {
+    isGetUserProfileCanUse() {
+      return !!uni.getUserProfile;
+    }
+  },
   methods: {
-    getUserInfo(e) {
-      this.userInfo=e.detail.userInfo
+    updateUserInfo(e) {
+      this.userInfo = e.detail.userInfo
       updateUserInfo(this.userInfo);
       this.$loginUser = this.userInfo;
-      storage.userInfo=this.userInfo;
+      storage.userInfo = this.userInfo;
+    },
+    getUserInfo(e) {
+      if (uni.getUserProfile) {
+        console.log('使用getUserProfile方法')
+        uni.getUserProfile({
+          desc: '用于完善用员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
+          success: (e) => {
+            this.updateUserInfo({detail: e})
+          },
+          fail: (e) => {
+            console.log(e)
+          }
+        })
+      } else {
+        console.log("获取用户信息: ", e, e.detail, e.detail.userInfo)
+        this.updateUserInfo(e)
+      }
     },
     change(index) {
       uni.navigateTo({

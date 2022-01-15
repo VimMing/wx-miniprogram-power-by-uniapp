@@ -3,9 +3,7 @@
     <view class="avatar--wrap">
       <view class="iconfont" :class="'icon-' + zodiac[currentBirthday.zodiac]">
         <div style="height: 100%; width: 100%">
-          <view style="opacity: 0; display: block; height: 160rpx"
-            >placeholder</view
-          >
+          <view style="opacity: 0; display: block; height: 160rpx">placeholder</view>
         </div>
       </view>
     </view>
@@ -21,15 +19,10 @@
           currentBirthday.daysDistance == 0
             ? "今"
             : currentBirthday.daysDistance
-        }}天 </span
-      >后是他/她的生日
+        }}天
+      </span>后是他/她的生日
     </div>
-    <liuyuno-tabs
-      :tabData="tabs"
-      :defaultIndex="defaultIndex"
-      @tabClick="tabClick"
-      ref="tabs"
-    />
+    <liuyuno-tabs :tabData="tabs" :defaultIndex="defaultIndex" @tabClick="tabClick" ref="tabs" />
     <div>
       <notices-tab
         :list="notices"
@@ -214,18 +207,24 @@ export default {
         });
     },
     birthdayNoticeList() {
-      this.updateSubscriptionId = "";
-      return birthdayNoticeList({
-        birthdayId: this.currentBirthday.id,
-      }).then((res) => {
-        // console.log(res);
-        let data = res.data || [];
-        data.forEach(
-          (i) => (i._when = new Date(i.when).format("yyyy-MM-dd HH点"))
-        );
-        this.notices = data.reverse();
-        return this.notices;
-      });
+      if (getApp().globalData.isRequestToken) {
+        this.updateSubscriptionId = "";
+        return birthdayNoticeList({
+          birthdayId: this.currentBirthday.id,
+        }).then((res) => {
+          let data = res.data || [];
+          data.forEach(
+            (i) => (i._when = new Date(i.when).format("yyyy-MM-dd HH点"))
+          );
+          this.notices = data.reverse();
+          return this.notices;
+        });
+      }else{
+        setTimeout(() => {
+          console.log('未获得token, 500ms后重新请求')
+          this.birthdayNoticeList.call(this)
+        }, 500)
+      }
     },
     handleChange(e) {
       let {
@@ -239,9 +238,8 @@ export default {
       }
       if (name === "noticeDay") {
         this.form[name] = value;
-        this.form["_" + name] = `${value[0] ? "下午" : "上午"}${
-          value[1] + 1
-        }点`;
+        this.form["_" + name] = `${value[0] ? "下午" : "上午"}${value[1] + 1
+          }点`;
       }
     },
     /**
