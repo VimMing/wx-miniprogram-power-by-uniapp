@@ -23,7 +23,7 @@ const Storage = function (keys = [], preKey = '') {
     }
 }
 
-const $ = new Storage(['birthdayList', 'currentBirthday'], 'common-key-')
+const $ = new Storage(['birthdayList', 'currentBirthday', 'userInfo'], 'common-key-')
 export default $
 export const storage = $._
 

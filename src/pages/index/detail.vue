@@ -2,9 +2,7 @@
   <div class="birthday-detail-page">
     <view class="avatar--wrap">
       <view class="iconfont" :class="'icon-' + zodiac[currentBirthday.zodiac]">
-        <div
-          style="height: 100%; width: 100%"
-        >
+        <div style="height: 100%; width: 100%">
           <view style="opacity: 0; display: block; height: 160rpx"
             >placeholder</view
           >
@@ -33,13 +31,13 @@
       ref="tabs"
     />
     <div>
-      <events-tab :events="events" v-show="defaultIndex === 0" />
       <notices-tab
         :list="notices"
         :b="currentBirthday"
-        v-show="defaultIndex === 1"
+        v-show="defaultIndex === 0"
         @remindAgain="remindAgain"
       />
+      <events-tab :events="events" v-show="defaultIndex === 1" />
     </div>
     <div>
       <uni-popup ref="popup" type="dialog">
@@ -126,10 +124,10 @@ export default {
       updateSubscriptionId: "",
       notices: [],
       tabs: [
+        { name: "通知订阅" },
         {
           name: "历史时刻",
         },
-        { name: "通知订阅" },
       ],
       defaultIndex: 0,
       loading: {
@@ -149,7 +147,7 @@ export default {
         "dog",
         "pig",
       ],
-      days: [1, 3, 7],
+      days: [0, 1, 3, 7],
       events: [],
       currentBirthday: {
         solarBirthday: {
@@ -262,10 +260,7 @@ export default {
      */
     confirm(done, value) {
       // 输入框的值
-      // console.log(value);
-      console.log(this.currentBirthday._solarBirthday)
       let j = new Date(this.currentBirthday._solarBirthday);
-      console.log(j);
       let t = this.form.noticeDay;
       let birthday = new Date(
         j.getFullYear(),
@@ -275,16 +270,25 @@ export default {
       );
       birthday.setDate(birthday.getDate() - this.days[this.form.day]);
       // console.log(j, birthday.format("yyyy-MM-dd HH:mm:ss"));
-      addBirthdayNotice({
-        id: this.updateSubscriptionId,
-        when: birthday.format("yyyy-MM-dd HH:mm:ss"),
-        birthdayId: this.currentBirthday.id,
-      }).then(() => {
-        this.birthdayNoticeList().then(() => {
-          this.defaultIndex = 1;
-          this.$refs.tabs.tabClick(this.defaultIndex)
+      if (birthday.getTime() < new Date().getTime()) {
+        uni.showToast({
+          icon: "none",
+          title: "提醒的日期设置在过去了~",
+          duration: 5000,
         });
-      });
+      } else {
+        addBirthdayNotice({
+          id: this.updateSubscriptionId,
+          when: birthday.format("yyyy-MM-dd HH:mm:ss"),
+          birthdayId: this.currentBirthday.id,
+        }).then(() => {
+          this.birthdayNoticeList().then(() => {
+            this.defaultIndex = 0;
+            this.$refs.tabs.tabClick(this.defaultIndex);
+          });
+        });
+      }
+
       // TODO 做一些其他的事情，手动执行 done 才会关闭对话框
       // ...
       done();
@@ -307,7 +311,7 @@ export default {
         },
       });
     },
-    remindAgain(item){
+    remindAgain(item) {
       this.updateSubscriptionId = item.id;
       this.remind();
     },
@@ -333,15 +337,15 @@ export default {
   },
   onLoad(options) {
     if (options.shareCode) {
-      console.log(options.shareCode);
       getFriendByShareCode(options.shareCode).then((res) => {
         storage.currentBirthday = res;
         this.showCurrentBirthday(options);
+        this.birthdayNoticeList();
       });
     } else {
       this.showCurrentBirthday(options);
+      this.birthdayNoticeList();
     }
-    this.birthdayNoticeList();
   },
 };
 </script>

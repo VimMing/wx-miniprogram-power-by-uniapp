@@ -58,6 +58,7 @@ import uniGrid from "@/components/uni-grid/uni-grid.vue";
 import uniGridItem from "@/components/uni-grid-item/uni-grid-item.vue";
 // const _ = require('ramda');
 import { updateUserInfo } from "@/utils/apis.js";
+import { storage, storageEmpty, promisify } from "@/utils";
 
 export default {
   components: {
@@ -73,25 +74,17 @@ export default {
     };
   },
   onLoad() {
-    this.getUserInfo();
+    // this.getUserInfo();
+    if (!storageEmpty("userInfo")) {
+      this.userInfo = storage.userInfo
+    }
   },
   methods: {
     getUserInfo(e) {
-      uni
-        .getUserInfo()
-        .then((res) => {
-          if (res && res[1] && res[1]["userInfo"]) {
-            this.userInfo = res[1]["userInfo"];
-            console.log(this.userInfo);
-            updateUserInfo(this.userInfo);
-            this.$loginUser = this.userInfo;
-          } else {
-            throw res;
-          }
-        })
-        .catch((e) => {
-          console.log(e, "获取用户信息错误");
-        });
+      this.userInfo=e.detail.userInfo
+      updateUserInfo(this.userInfo);
+      this.$loginUser = this.userInfo;
+      storage.userInfo=this.userInfo;
     },
     change(index) {
       uni.navigateTo({

@@ -43,7 +43,7 @@
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "生日备忘本",
 		"navigationBarBackgroundColor": "#1A237E",
-		"backgroundColor": "#1A237E"
+		"backgroundColor": "#ffffff"
 	},
 	"tabBar": {
 		"color": "#7A7E83",

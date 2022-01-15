@@ -40,7 +40,7 @@ export default {
     },
   },
   mounted(){
-      console.log('hello world')
+      // console.log('hello world')
   }
 };
 </script>
