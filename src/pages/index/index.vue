@@ -11,27 +11,21 @@
             :key="index"
           >
             <view class="birthday-item" @tap="showDetail(item)">
-              <view
-                class="avatar-wrap iconfont"
-                :class="'icon-' + zodiac[item.zodiac]"
-              >
-              </view>
+              <view class="avatar-wrap iconfont" :class="'icon-' + zodiac[item.zodiac]"></view>
               <view class="birthday-content">
                 <view class="name-birthday-wrap">
                   <text class="name">{{ item.name }}</text>
-                  <text class="birthday">
-                    {{ item._birthday }}({{ item.isLunar ? "农历" : "公历" }})
-                  </text>
+                  <text class="birthday">{{ item._birthday }}({{ item.isLunar ? "农历" : "公历" }})</text>
                 </view>
                 <view class="next-birthday-wrap">
-                  <view class="next-birthday-distance"
-                    >{{
+                  <view class="next-birthday-distance">
+                    {{
                       item.daysDistance == 0 ? "今" : item.daysDistance
-                    }}日</view
-                  >
-                  <view class="next-birthday-day">
-                    距下次生日{{ item._solarBirthday.format("yyyy年MM月dd日") }}
+                    }}日
                   </view>
+                  <view
+                    class="next-birthday-day"
+                  >距下次生日{{ item._solarBirthday.format("yyyy年MM月dd日") }}</view>
                 </view>
               </view>
             </view>

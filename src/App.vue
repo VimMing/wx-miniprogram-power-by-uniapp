@@ -2,7 +2,11 @@
 import { wxGetToken } from "@/utils/apis.js";
 import { promisify } from "@/utils";
 export default {
+  globalData: {
+    isRequestToken: false
+  },
   onLaunch: function () {
+
     const updateManager = uni.getUpdateManager();
 
     updateManager.onCheckForUpdate(function (res) {
@@ -29,7 +33,10 @@ export default {
     promisify(uni.login)({
       provider: "weixin",
     }).then(({ code }) => {
-      wxGetToken(code);
+      wxGetToken(code).finally(() => {
+        this.globalData.isRequestToken = true
+        console.log(this.globalData)
+      });
     });
   },
   onHide: function () {
@@ -37,10 +44,6 @@ export default {
   },
 };
 
-		// "navigationBarTextStyle": "black",
-		// "navigationBarTitleText": "uni-app",
-		// "navigationBarBackgroundColor": "#ffffff",
-		// "backgroundColor": "#F8F8F8"
 </script>
 
 <style lang="scss">

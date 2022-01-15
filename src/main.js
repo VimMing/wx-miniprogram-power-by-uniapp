@@ -5,11 +5,6 @@ Vue.config.productionTip = false
 Vue.prototype.$color = { primary: "#1A237E" };
 App.mpType = 'app'
 Date.prototype.format = function (format) {
-  // if (typeof date === 'string') {
-  // Compatible with WeChat version of ios
-  // date = date.replace(/-/g, '/')
-  //     date = new Date(date)
-  // }
   var o = {
     'M+': this.getMonth() + 1, // month
     'd+': this.getDate(), // day
