@@ -4,7 +4,11 @@
       <view class="person-info flex-space-between flex-align-center">
         <view class="info flex-align-center">
           <view class="ma-10-r">
-            <image class="avatar" :src="userInfo.avatarUrl" v-if="userInfo.avatarUrl" />
+            <image
+              class="avatar"
+              :src="userInfo.avatarUrl"
+              v-if="userInfo.avatarUrl"
+            />
             <view class="avatar" v-else>V</view>
           </view>
           <view class="info-text-wrapper" v-if="userInfo.avatarUrl">
@@ -17,8 +21,12 @@
               open-type="getUserInfo"
               @getuserinfo="getUserInfo"
               v-if="!isGetUserProfileCanUse"
-            >获取头像</button>
-            <button class="getInfo" @click="getUserInfo" v-else>获取头像</button>
+            >
+              获取头像
+            </button>
+            <button class="getInfo" @click="getUserInfo" v-else>
+              获取头像
+            </button>
           </view>
         </view>
         <view class="goto-wrapper flex-align-center">
@@ -29,7 +37,12 @@
     </view>
     <view class="tool-menu-title">工具</view>
     <view class="tool-menu-body">
-      <uni-grid :column="3" :show-border="false" :square="false" @change="change">
+      <uni-grid
+        :column="3"
+        :show-border="false"
+        :square="false"
+        @change="change"
+      >
         <uni-grid-item>
           <image
             class="image"
@@ -44,67 +57,67 @@
 </template>
 
 <script>
-import uniIcon from "@/components/uni-icon/uni-icon.vue";
-import uniGrid from "@/components/uni-grid/uni-grid.vue";
-import uniGridItem from "@/components/uni-grid-item/uni-grid-item.vue";
+import uniIcon from '@/components/uni-icon/uni-icon.vue'
+import uniGrid from '@/components/uni-grid/uni-grid.vue'
+import uniGridItem from '@/components/uni-grid-item/uni-grid-item.vue'
 // const _ = require('ramda');
-import { updateUserInfo } from "@/utils/apis.js";
-import { storage, storageEmpty, promisify } from "@/utils";
+import { updateUserInfo } from '@/utils/apis.js'
+import { storage, storageEmpty, promisify } from '@/utils'
 
 export default {
   components: {
     uniIcon,
     uniGrid,
-    uniGridItem,
+    uniGridItem
   },
   data() {
     return {
       userInfo: {
-        avatarUrl: "",
-      },
-    };
+        avatarUrl: ''
+      }
+    }
   },
   onLoad() {
-    if (!storageEmpty("userInfo")) {
+    if (!storageEmpty('userInfo')) {
       this.userInfo = storage.userInfo
     }
   },
   computed: {
     isGetUserProfileCanUse() {
-      return !!uni.getUserProfile;
+      return !!uni.getUserProfile
     }
   },
   methods: {
     updateUserInfo(e) {
       this.userInfo = e.detail.userInfo
-      updateUserInfo(this.userInfo);
-      this.$loginUser = this.userInfo;
-      storage.userInfo = this.userInfo;
+      updateUserInfo(this.userInfo)
+      this.$loginUser = this.userInfo
+      storage.userInfo = this.userInfo
     },
     getUserInfo(e) {
       if (uni.getUserProfile) {
         console.log('使用getUserProfile方法')
         uni.getUserProfile({
           desc: '用于完善用员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-          success: (e) => {
-            this.updateUserInfo({detail: e})
+          success: e => {
+            this.updateUserInfo({ detail: e })
           },
-          fail: (e) => {
+          fail: e => {
             console.log(e)
           }
         })
       } else {
-        console.log("获取用户信息: ", e, e.detail, e.detail.userInfo)
+        console.log('获取用户信息: ', e, e.detail, e.detail.userInfo)
         this.updateUserInfo(e)
       }
     },
     change(index) {
       uni.navigateTo({
-        url: "about",
-      });
-    },
-  },
-};
+        url: 'about'
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss">
@@ -189,7 +202,7 @@ export default {
 }
 
 .tool-menu-title:after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   margin: auto;
