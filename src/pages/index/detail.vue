@@ -266,13 +266,7 @@ export default {
         t[0] ? (12 + t[1] + 1) % 24 : t[1] + 1
       )
       birthday.setDate(birthday.getDate() - this.days[this.form.day])
-      // console.log(j, birthday.format("yyyy-MM-dd HH:mm:ss"));
       if (birthday.getTime() < new Date().getTime()) {
-        // uni.showToast({
-        //   icon: 'none',
-        //   title: '提醒的日期设置在过去了~',
-        //   duration: 5000,
-        // })
         if (this.currentBirthday.isLunar) {
           // 如果是农历首先把农历转成公历
           let lunarBirthday = new Date(this.currentBirthday.birthday)
@@ -349,8 +343,13 @@ export default {
       }
     },
   },
+  /**
+   * 页面加载时， 调用下面的函数
+   * @param options 页面带过来的参数
+   */
   onLoad(options) {
     if (options.shareCode) {
+      console.info('通过shareCode获取信息', options.shareCode)
       getFriendByShareCode(options.shareCode).then((res) => {
         storage.currentBirthday = res
         this.showCurrentBirthday(options)

@@ -3,13 +3,13 @@
     <view class="avatar--wrap">
       <view class="iconfont" :class="'icon-' + form.zodiac">
         <picker
-          style="height: 100%;width: 100%;"
+          style="height: 100%; width: 100%"
           :range="chineseZodiac"
           :value="zodiacActiveIndex"
           @change="handleChange"
           data-name="zodiac"
         >
-          <view style="opacity: 0; display: block; height: 160rpx;">placeholder</view>
+          <view style="opacity: 0; display: block; height: 160rpx">placeholder</view>
         </picker>
       </view>
     </view>
@@ -31,7 +31,9 @@
             :color="$color.primary"
             data-name="birthday"
           >
-            <view class="picker">{{form._birthday ? form._birthday : '点击设置生日'}}</view>
+            <view class="picker">{{
+              form._birthday ? form._birthday : '点击设置生日'
+            }}</view>
           </picker>
         </view>
       </view>
@@ -51,7 +53,7 @@
                 :checked="form.type == item.value"
                 color="#ff272e"
               ></radio>
-              <text>{{item.chineseName}}</text>
+              <text>{{ item.chineseName }}</text>
             </label>
           </radio-group>
         </view>
@@ -82,7 +84,7 @@
                     :checked="form.sex == item.value"
                     color="#ff272e"
                   ></radio>
-                  <text>{{item.chineseName}}</text>
+                  <text>{{ item.chineseName }}</text>
                 </label>
               </radio-group>
             </view>
@@ -97,174 +99,174 @@
 </template>
 
 <script>
-import { createFriendBirthday, myFriends } from "@/utils/apis.js";
-import { storage } from "@/utils";
+import { createFriendBirthday, myFriends } from '@/utils/apis.js'
+import { storage } from '@/utils'
 export default {
   data() {
     return {
       zodiac: [
-        "mouse",
-        "cattle",
-        "tiger",
-        "rabitt",
-        "dragon",
-        "snake",
-        "horse",
-        "sheep",
-        "monkey",
-        "chicken",
-        "dog",
-        "pig"
+        'mouse',
+        'cattle',
+        'tiger',
+        'rabitt',
+        'dragon',
+        'snake',
+        'horse',
+        'sheep',
+        'monkey',
+        'chicken',
+        'dog',
+        'pig',
       ],
       chineseZodiac: [
-        "鼠",
-        "牛",
-        "虎",
-        "兔",
-        "龙",
-        "蛇",
-        "马",
-        "羊",
-        "猴",
-        "鸡",
-        "狗",
-        "猪"
+        '鼠',
+        '牛',
+        '虎',
+        '兔',
+        '龙',
+        '蛇',
+        '马',
+        '羊',
+        '猴',
+        '鸡',
+        '狗',
+        '猪',
       ],
       loading: false,
       showMore: false,
       form: {
-        name: "",
+        name: '',
         sex: -1, // 0 boy , 1 girl
-        birthday: "", // month-day
+        birthday: '', // month-day
         type: 0, // 0: false, 1: true 公历还是农历
-        zodiac: "picker"
+        zodiac: 'picker',
       },
-      zodiacActiveIndex: "",
+      zodiacActiveIndex: '',
       genders: [
-        { name: "boy", value: 0, chineseName: "男" },
-        { name: "girl", value: 1, chineseName: "女" }
+        { name: 'boy', value: 0, chineseName: '男' },
+        { name: 'girl', value: 1, chineseName: '女' },
       ],
       // solar2lunar
       birthdayTypes: [
-        { name: "solar", value: 0, chineseName: "公历" },
-        { name: "lunar", value: 1, chineseName: "农历" }
-      ]
-    };
+        { name: 'solar', value: 0, chineseName: '公历' },
+        { name: 'lunar', value: 1, chineseName: '农历' },
+      ],
+    }
   },
   onLoad(options) {
-    let today = new Date();
-    this.zodiacActiveIndex = (today.getFullYear() - 1996) % 12;
+    let today = new Date()
+    this.zodiacActiveIndex = (today.getFullYear() - 1996) % 12
     // this.form.zodiac = this.zodiac[this.zodiacActiveIndex];
-    if(options.id){
-      let temp = storage.currentBirthday;
-      this.form = temp;
-      this.zodiacActiveIndex = this.form.zodiac;
-      this.form.zodiac = this.zodiac[this.zodiacActiveIndex];
-      this.form.type = Number(this.form.isLunar);
-      this.form.birthday = new Date(this.form.birthday).format("MM-dd");
-      console.log(this.form);
+    if (options.id) {
+      let temp = storage.currentBirthday
+      this.form = temp
+      this.zodiacActiveIndex = this.form.zodiac
+      this.form.zodiac = this.zodiac[this.zodiacActiveIndex]
+      this.form.type = Number(this.form.isLunar)
+      this.form.birthday = new Date(this.form.birthday).format('MM-dd')
+      console.log(this.form)
     }
   },
   computed: {
     multiSelect() {
-      let res = [];
+      let res = []
       if (this.form.birthday) {
-        res = this.form.birthday.split("-").map(i => i - 1);
+        res = this.form.birthday.split('-').map((i) => i - 1)
       } else {
-        let today = new Date();
-        res = [today.getMonth(), today.getDate() - 1];
+        let today = new Date()
+        res = [today.getMonth(), today.getDate() - 1]
       }
-      return res;
+      return res
     },
     multiArray() {
-      let months = new Array(12).fill(0);
-      let days = new Array(31).fill(0);
+      let months = new Array(12).fill(0)
+      let days = new Array(31).fill(0)
       return [
-        months.map((i, index) => index + 1 + "月"),
-        days.map((i, index) => index + 1 + "日")
-      ];
-    }
+        months.map((i, index) => index + 1 + '月'),
+        days.map((i, index) => index + 1 + '日'),
+      ]
+    },
   },
   methods: {
     handleSave(e) {
       if (!this.form.name) {
         uni.showToast({
-          icon: "none",
-          title: "请填写姓名",
-          duration: 1000
-        });
-        return e;
+          icon: 'none',
+          title: '请填写姓名',
+          duration: 1000,
+        })
+        return e
       }
       if (!this.form.birthday) {
         uni.showToast({
-          icon: "none",
-          title: "请填写生日",
-          duration: 1000
-        });
-        return e;
+          icon: 'none',
+          title: '请填写生日',
+          duration: 1000,
+        })
+        return e
       }
-      this.loading = true;
+      this.loading = true
       try {
         createFriendBirthday({
           id: this.form.id,
           name: this.form.name,
           zodiac: +this.zodiacActiveIndex,
-          birthday: "2021-" + this.form.birthday,
-          isLunar: Boolean(+this.form.type)
+          birthday: '2021-' + this.form.birthday,
+          isLunar: Boolean(+this.form.type),
         })
           .then(() => {
             myFriends()
-              .then(res => {
-                storage.birthdayList = res.data;
+              .then((res) => {
+                storage.birthdayList = res.data
               })
               .finally(() => {
-                uni.navigateBack();
-                this.loading = false;
-              });
+                uni.navigateBack()
+                this.loading = false
+              })
           })
-          .catch(e => {
+          .catch((e) => {
             uni.showToast({
-              icon: "none",
+              icon: 'none',
               title: e,
-              duration: 1000
-            });
-            this.loading = false;
-          });
+              duration: 1000,
+            })
+            this.loading = false
+          })
       } catch (e) {
         // error
         uni.showToast({
-          icon: "none",
+          icon: 'none',
           title: e,
-          duration: 1000
-        });
-        this.loading = false;
+          duration: 1000,
+        })
+        this.loading = false
       }
     },
     handleShowMore() {
-      this.showMore = true;
+      this.showMore = true
     },
     handleChange(e) {
       let {
         currentTarget: {
-          dataset: { name }
+          dataset: { name },
         },
-        detail: { value }
-      } = e;
-      console.log(name, value);
-      if (name === "type" || name === "sex") {
-        this.form[name] = value;
+        detail: { value },
+      } = e
+      console.log(name, value)
+      if (name === 'type' || name === 'sex') {
+        this.form[name] = value
       }
-      if (name === "birthday") {
-        this.form[name] = value.map(i => ("0" + (i + 1)).slice(-2)).join("-");
-        this.form["_" + name] = (value[0] + 1) + "月" + (value[1] + 1) + "日";
+      if (name === 'birthday') {
+        this.form[name] = value.map((i) => ('0' + (i + 1)).slice(-2)).join('-')
+        this.form['_' + name] = value[0] + 1 + '月' + (value[1] + 1) + '日'
       }
-      if (name === "zodiac") {
-        this.form.zodiac = this.zodiac[value];
-        this.zodiacActiveIndex = value;
+      if (name === 'zodiac') {
+        this.form.zodiac = this.zodiac[value]
+        this.zodiacActiveIndex = value
       }
-    }
-  }
-};
+    },
+  },
+}
 </script>
 
 <style scoped lang="scss">

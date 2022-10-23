@@ -2,11 +2,11 @@ import Request from '@/utils/luch-request/index.js' // 下载的插件
 // import Request from 'luch-request' // 使用npm
 
 const http = new Request({
-  // baseURL: "https://birthday.codehub.store/api"
-  baseURL:
-    process.env.NODE_ENV === 'development'
-      ? 'http://127.0.0.1:7001/api'
-      : 'https://birthday.codehub.store/api'
+  baseURL: 'https://birthday.codehub.store/api'
+  // baseURL:
+  //   process.env.NODE_ENV === 'development'
+  //     ? 'http://127.0.0.1:7001/api'
+  //     : 'https://birthday.codehub.store/api'
 })
 
 let token = ''
@@ -75,7 +75,7 @@ export function getFriendByShareCode(shareCode) {
     })
     .then(res => {
       let data = res.data
-      if (data.errcode === 0) {
+      if (data.errCode === 0) {
         let i = data.data
         let today = new Date()
         i._birthday = new Date(i.birthday).format('MM月dd日')
