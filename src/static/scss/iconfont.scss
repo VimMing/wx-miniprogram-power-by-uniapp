@@ -1,91 +1,104 @@
+/* CDN 服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
-  font-family: 'iconfont';  /* project id 2114725 */
-  src: url('//at.alicdn.com/t/font_2114725_fmz311pnfn.eot');
-  src: url('//at.alicdn.com/t/font_2114725_fmz311pnfn.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_2114725_fmz311pnfn.woff2') format('woff2'),
-  url('//at.alicdn.com/t/font_2114725_fmz311pnfn.woff') format('woff'),
-  url('//at.alicdn.com/t/font_2114725_fmz311pnfn.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_2114725_fmz311pnfn.svg#iconfont') format('svg');
+  font-family: 'iconfont';  /* Project id 2114725 */
+  src: url('//at.alicdn.com/t/c/font_2114725_zpxhitcpfx.woff2?t=1669790172719') format('woff2'),
+       url('//at.alicdn.com/t/c/font_2114725_zpxhitcpfx.woff?t=1669790172719') format('woff'),
+       url('//at.alicdn.com/t/c/font_2114725_zpxhitcpfx.ttf?t=1669790172719') format('truetype');
 }
 
-  .iconfont {
-    font-family: "iconfont" !important;
-    font-size: 16px;
-    font-style: normal;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
+.iconfont {
+  font-family: 'iconfont' !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 
-  .icon-more:before {
-    content: "\e8af";
-  }
+.icon-more:before {
+  content: '\e8af';
+}
 
-  .icon-add:before {
-    content: "\e62c";
-  }
+.icon-add:before {
+  content: '\e62c';
+}
 
-  .icon-birth::before{
-    content: "\e628";
-  }
+.icon-birth::before {
+  content: '\e628';
+}
 
-  .icon-death::before{
-    content: "\e694";
-  }
+.icon-death::before {
+  content: '\e694';
+}
 
-  .icon-event::before{
-    content: "\e602";
-  }
+.icon-event::before {
+  content: '\e602';
+}
 
-  .icon-wechat::before{
-    content: "\e620";
-  }
+.icon-wechat::before {
+  content: '\e620';
+}
 
-  .icon-add-friends::before{
-    content: "\e635";
-  }
+.icon-add-friends::before {
+  content: '\e635';
+}
 
-  .icon-clock::before{
-    content: "\e7d9";
-  }
+.icon-delete-friends::before {
+  content: '\e6c7';
+}
 
-  .icon-mouse {
-    background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/mouse.jpg');
-  }
-  .icon-cattle {
-    background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/cattle.png');
-  }
-  .icon-tiger {
-    background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/tiger.png');
-  }
-  .icon-rabitt {
-    background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/rabbit.png');
-  }
-  .icon-dragon {
-    background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/dragon.png');
-  }
-  .icon-snake {
-    background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/snake.png');
-  }
-  .icon-horse {
-    background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/horse.png');
-  }
-  .icon-sheep {
-    background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/fdf3db8069c36c7d226c611170d81fb7.jpg');
-  }
-  .icon-monkey {
-    background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/e65261cc3c19f3a308c10671f9457a26.jpeg');
-  }
-  .icon-chicken {
-    background-image: url('@/static/icons/chicken.png');
-  }
-  .icon-dog {
-    background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/dog.png');
-  }
-  .icon-pig {
-    background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/28252e996487ebf1202d0f57240c4adc.jpg');
-  }
-  .icon-picker{
-    background-image: url('@/static/icons/picker-avatar.png');
-  }
+.icon-clock::before {
+  content: '\e7d9';
+}
+
+.icon-mouse {
+  background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/mouse.jpg');
+}
+.icon-cattle {
+  background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/cattle.png');
+}
+.icon-tiger {
+  background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/tiger.png');
+}
+.icon-rabitt {
+  background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/rabbit.png');
+}
+.icon-dragon {
+  background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/dragon.png');
+}
+.icon-snake {
+  background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/snake.png');
+}
+.icon-horse {
+  background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/horse.png');
+}
+.icon-sheep {
+  background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/fdf3db8069c36c7d226c611170d81fb7.jpg');
+}
+.icon-monkey {
+  background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/e65261cc3c19f3a308c10671f9457a26.jpeg');
+}
+.icon-chicken {
+  background-image: url('@/static/icons/chicken.png');
+}
+.icon-dog {
+  background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/dog.png');
+}
+.icon-pig {
+  background-image: url('https://imagine-1254268680.cos.ap-shanghai.myqcloud.com/share/28252e996487ebf1202d0f57240c4adc.jpg');
+}
+// .icon-picker {
+//   // background-image: url('@/static/icons/picker-avatar.png');
+// }
+.icon-picker::before {
+  font-size: 100px;
+  color: red;
+  z-index: -1;
+  position: absolute;
+  content: '\e75f';
+}
+
+.icon-about-me::before {
+  content: '\e633';
+}

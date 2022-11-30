@@ -4,11 +4,7 @@
       <view class="person-info flex-space-between flex-align-center">
         <view class="info flex-align-center">
           <view class="ma-10-r">
-            <image
-              class="avatar"
-              :src="userInfo.avatarUrl"
-              v-if="userInfo.avatarUrl"
-            />
+            <image class="avatar" :src="userInfo.avatarUrl" v-if="userInfo.avatarUrl" />
             <view class="avatar" v-else>V</view>
           </view>
           <view class="info-text-wrapper" v-if="userInfo.avatarUrl">
@@ -24,9 +20,7 @@
             >
               获取头像
             </button>
-            <button class="getInfo" @click="getUserInfo" v-else>
-              获取头像
-            </button>
+            <button class="getInfo" @click="getUserInfo" v-else>获取头像</button>
           </view>
         </view>
         <view class="goto-wrapper flex-align-center">
@@ -37,18 +31,9 @@
     </view>
     <view class="tool-menu-title">工具</view>
     <view class="tool-menu-body">
-      <uni-grid
-        :column="3"
-        :show-border="false"
-        :square="false"
-        @change="change"
-      >
+      <uni-grid :column="3" :show-border="false" :square="false" @change="change">
         <uni-grid-item>
-          <image
-            class="image"
-            src="cloud://production-15c960.7072-production-15c960/icons/vote-icon.png"
-            mode="aspectFill"
-          />
+          <i class="iconfont icon-about-me"></i>
           <text class="text">关于</text>
         </uni-grid-item>
       </uni-grid>
@@ -68,13 +53,13 @@ export default {
   components: {
     uniIcon,
     uniGrid,
-    uniGridItem
+    uniGridItem,
   },
   data() {
     return {
       userInfo: {
-        avatarUrl: ''
-      }
+        avatarUrl: '',
+      },
     }
   },
   onLoad() {
@@ -85,7 +70,7 @@ export default {
   computed: {
     isGetUserProfileCanUse() {
       return !!uni.getUserProfile
-    }
+    },
   },
   methods: {
     updateUserInfo(e) {
@@ -99,12 +84,12 @@ export default {
         console.log('使用getUserProfile方法')
         uni.getUserProfile({
           desc: '用于完善用员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-          success: e => {
+          success: (e) => {
             this.updateUserInfo({ detail: e })
           },
-          fail: e => {
+          fail: (e) => {
             console.log(e)
-          }
+          },
         })
       } else {
         console.log('获取用户信息: ', e, e.detail, e.detail.userInfo)
@@ -113,10 +98,10 @@ export default {
     },
     change(index) {
       uni.navigateTo({
-        url: 'about'
+        url: 'about',
       })
-    }
-  }
+    },
+  },
 }
 </script>
 

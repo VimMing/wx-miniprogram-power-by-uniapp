@@ -30,6 +30,7 @@
         :b="currentBirthday"
         v-show="defaultIndex === 0"
         @remindAgain="remindAgain"
+        @remindFirstTime="remind"
       />
       <events-tab :events="events" v-show="defaultIndex === 1" />
     </div>
@@ -80,7 +81,15 @@
         <i class="iconfont icon-wechat"></i>
         <text>分享生日</text>
       </button>
-      <button @click="add" :loading="loading.adding">
+      <button
+        @click="handleLongTapDelete(currentBirthday)"
+        :loading="loading.adding"
+        v-if="isFriend"
+      >
+        <i class="iconfont icon-delete-friends"></i>
+        <text>删除生日</text>
+      </button>
+      <button @click="add" :loading="loading.adding" v-else>
         <i class="iconfont icon-add-friends"></i>
         <text>添加生日</text>
       </button>
@@ -98,6 +107,7 @@ import {
   addBirthdayNotice,
   birthdayNoticeList,
   myFriends,
+  deleteFriend,
   lunarToSolar,
 } from '@/utils/apis.js'
 import { storage, storageEmpty, promisify } from '@/utils'
@@ -116,6 +126,7 @@ export default {
   },
   data() {
     return {
+      isFriend: false,
       updateSubscriptionId: '',
       notices: [],
       tabs: [
@@ -174,37 +185,61 @@ export default {
     },
   },
   methods: {
+    handleLongTapDelete(item) {
+      promisify(uni.showModal)({
+        title: '删除确认',
+        content: `确定删除${item.name}的生日？`,
+      }).then((res) => {
+        if (res.confirm) {
+          deleteFriend(item.id)
+            .then((res) => {
+              myFriends().then((res) => {
+                storage.birthdayList = res.data
+              })
+              uni.showToast({
+                title: '删除成功',
+                duration: 2000,
+                icon: 'none',
+              })
+              setTimeout(() => {
+                uni.switchTab({
+                  url: `/pages/index/index`,
+                })
+              }, 500)
+            })
+            .catch((e) => {
+              uni.showToast({
+                title: '删除功能，正在开发....',
+                duration: 2000,
+                icon: 'none',
+              })
+            })
+        } else if (res.cancel) {
+          console.log('用户点击取消')
+        }
+      })
+    },
     add() {
       this.loading.adding = true
       addFriendByOtherManShareByJwt(this.currentBirthday.id)
         .then((res) => {
-          console.log(res)
-          if (res.errcode === 0) {
-            myFriends().then((res) => {
-              storage.birthdayList = res.data
-            })
-            uni.showToast({
-              title: '添加成功',
-              duration: 2000,
-              mask: true,
-              complete: () => {
-                setTimeout(() => {
-                  uni.switchTab({
-                    url: `/pages/index/index`,
-                  })
-                }, 1500)
-              },
-            })
-          } else {
-            uni.showToast({
-              title: res.errMessage,
-              duration: 2000,
-              icon: 'none',
-            })
-          }
+          myFriends().then((res) => {
+            storage.birthdayList = res.data
+          })
+          uni.showToast({
+            title: '添加成功',
+            duration: 2000,
+            mask: true,
+            complete: () => {
+              setTimeout(() => {
+                uni.switchTab({
+                  url: `/pages/index/index`,
+                })
+              }, 1500)
+            },
+          })
         })
         .finally(() => {
-          // console.log("hello");
           this.loading.adding = false
         })
     },
@@ -249,6 +284,16 @@ export default {
       // TODO 做一些其他的事情，before-close 为true的情况下，手动执行 done 才会关闭对话框
       // ...
       done()
+    },
+    setIsFriend() {
+      const friend = storage.currentBirthday || {}
+      const friendList = storage.birthdayList || []
+      const findIndex = friendList.findIndex((item) => item.id === friend.id)
+      if (findIndex === -1) {
+        this.isFriend = false
+      } else {
+        this.isFriend = true
+      }
     },
     /**
      * 点击确认按钮触发
@@ -340,6 +385,8 @@ export default {
             this.events = res.reverse() || []
           })
         }
+        // 判断是否是朋友
+        this.setIsFriend()
       }
     },
   },
@@ -381,10 +428,11 @@ $operation-wrap-height: 120rpx;
   i {
     font-size: 24px;
   }
+  .icon-add-friends,
   .icon-wechat {
     color: $uni-color-success;
   }
-  .icon-add-friends {
+  .icon-delete-friends {
     color: $uni-color-primary;
   }
   .icon-clock {

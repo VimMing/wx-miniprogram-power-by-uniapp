@@ -9,6 +9,18 @@ const http = new Request({
   //     : 'https://birthday.codehub.store/api'
 })
 
+http.interceptors.response.use((res) => {
+  if(res && res.data && Number(res.data.errCode) === 1){
+    uni.showToast({
+      icon: 'none',
+      title: res.data.errMessage || res.data.errMsg,
+      duration: 1000,
+    })
+    throw new Error(res.data.errMessage || res.data.errMsg)
+  }
+  return res
+})
+
 let token = ''
 
 export function wxGetToken(code) {

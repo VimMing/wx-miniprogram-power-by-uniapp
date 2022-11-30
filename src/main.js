@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App'
 
 Vue.config.productionTip = false
-Vue.prototype.$color = { primary: "#1A237E" };
+Vue.prototype.$color = { primary: "#ff272e" };
 App.mpType = 'app'
 Date.prototype.format = function (format) {
   var o = {
