@@ -8,19 +8,16 @@
             <view class="avatar" v-else>V</view>
           </view>
           <view class="info-text-wrapper" v-if="userInfo.avatarUrl">
-            <view>{{ userInfo.nickName }}</view>
-            <view>{{ userInfo.province }} {{ userInfo.city }}</view>
+            <view v-if="userInfo.nickName">{{ userInfo.nickName }}</view>
+            <view v-if="userInfo.province"
+              >{{ userInfo.province }} {{ userInfo.city }}</view
+            >
           </view>
           <view class="no-info-text-wrapper" v-else>
-            <button
-              class="getInfo"
-              open-type="getUserInfo"
-              @getuserinfo="getUserInfo"
-              v-if="!isGetUserProfileCanUse"
-            >
+            <!-- <button  class="getInfo" @click="getUserInfo">获取头像</button> -->
+            <button open-type="chooseAvatar" class="getInfo" @chooseavatar="getAvatar">
               获取头像
             </button>
-            <button class="getInfo" @click="getUserInfo" v-else>获取头像</button>
           </view>
         </view>
         <view class="goto-wrapper flex-align-center">
@@ -47,7 +44,7 @@ import uniGrid from '@/components/uni-grid/uni-grid.vue'
 import uniGridItem from '@/components/uni-grid-item/uni-grid-item.vue'
 // const _ = require('ramda');
 import { updateUserInfo } from '@/utils/apis.js'
-import { storage, storageEmpty, promisify } from '@/utils'
+import { storage, storageEmpty } from '@/utils'
 
 export default {
   components: {
@@ -79,10 +76,17 @@ export default {
       this.$loginUser = this.userInfo
       storage.userInfo = this.userInfo
     },
+    getAvatar(e) {
+      const { avatarUrl } = e.detail
+      this.userInfo = {
+        avatarUrl: avatarUrl,
+      }
+      storage.userInfo = this.userInfo
+    },
     getUserInfo(e) {
-      if (uni.getUserProfile) {
+      if (wx.getUserProfile) {
         console.log('使用getUserProfile方法')
-        uni.getUserProfile({
+        wx.getUserProfile({
           desc: '用于完善用员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
           success: (e) => {
             this.updateUserInfo({ detail: e })
@@ -91,9 +95,6 @@ export default {
             console.log(e)
           },
         })
-      } else {
-        console.log('获取用户信息: ', e, e.detail, e.detail.userInfo)
-        this.updateUserInfo(e)
       }
     },
     change(index) {
