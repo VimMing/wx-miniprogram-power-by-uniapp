@@ -164,7 +164,6 @@ export default {
       this.form.zodiac = this.zodiac[this.zodiacActiveIndex]
       this.form.type = Number(this.form.isLunar)
       this.form.birthday = new Date(this.form.birthday).format('MM-dd')
-      console.log(this.form)
     }
   },
   computed: {
@@ -214,14 +213,20 @@ export default {
           birthday: '2021-' + this.form.birthday,
           isLunar: Boolean(+this.form.type),
         })
-          .then(() => {
+          .then((item) => {
+            item = item.data || {}
             myFriends()
               .then((res) => {
                 storage.birthdayList = res.data
+                const list = res.data
+                storage.currentBirthday = list.find((i) => i.id === item.id) || {}
+                uni.redirectTo({
+                  url: `/pages/index/detail?id=${item.id}`,
+                })
+                this.loading = false
               })
               .finally(() => {
-                uni.navigateBack()
-                this.loading = false
+                // uni.navigateBack()
               })
           })
           .catch((e) => {

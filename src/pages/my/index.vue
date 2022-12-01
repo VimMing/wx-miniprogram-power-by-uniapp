@@ -125,11 +125,15 @@ export default {
   align-items: center;
 }
 .person-info-data-statistic-wrapper {
-  background-color: $uni-color-primary;
+  background-image: url(https://source.unsplash.com/random);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
   color: $uni-text-color-inverse;
-  min-height: 400rpx;
   padding: 20rpx;
   box-sizing: border-box;
+  min-height: 500rpx;
+  padding-top: 160rpx;
 
   .info-text-wrapper {
     color: white;
@@ -145,10 +149,10 @@ export default {
     width: 50rpx;
   }
   .getInfo {
-    background-color: inherit;
+    background-color: $uni-color-primary;
     color: white;
     font-size: 30rpx;
-    border: 1rpx solid;
+    border: 1rpx solid $uni-color-primary;
     line-height: 1;
     padding: 10rpx 20rpx;
     border-radius: 25rpx;

@@ -110,7 +110,7 @@ import {
   deleteFriend,
   lunarToSolar,
 } from '@/utils/apis.js'
-import { storage, storageEmpty, promisify } from '@/utils'
+import { storage, storageEmpty, promisify, formatBirthday } from '@/utils'
 import liuyunoTabs from '@/components/liuyuno-tabs/liuyuno-tabs.vue'
 import uniPopup from '@/components/uni-popup/uni-popup.vue'
 import uniPopupDialog from '@/components/uni-popup/uni-popup-dialog.vue'
@@ -387,6 +387,7 @@ export default {
         }
         // 判断是否是朋友
         this.setIsFriend()
+        this.currentBirthday = formatBirthday(this.currentBirthday)
       }
     },
   },
