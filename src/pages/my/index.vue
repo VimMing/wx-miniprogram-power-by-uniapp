@@ -1,6 +1,9 @@
 <template>
   <view class="user-index">
-    <view class="person-info-data-statistic-wrapper">
+    <view
+      class="person-info-data-statistic-wrapper"
+      :style="{ backgroundImage: 'url(' + tempFilePathBg + ')' }"
+    >
       <view class="person-info flex-space-between flex-align-center">
         <view class="info flex-align-center">
           <view class="ma-10-r">
@@ -30,6 +33,10 @@
     <view class="tool-menu-body">
       <uni-grid :column="3" :show-border="false" :square="false" @change="change">
         <uni-grid-item>
+          <i class="iconfont icon-about-music"></i>
+          <text class="text">音程训练</text>
+        </uni-grid-item>
+        <uni-grid-item>
           <i class="iconfont icon-about-me"></i>
           <text class="text">关于</text>
         </uni-grid-item>
@@ -54,6 +61,7 @@ export default {
   },
   data() {
     return {
+      tempFilePathBg: 'https://source.unsplash.com/random',
       userInfo: {
         avatarUrl: '',
       },
@@ -63,6 +71,20 @@ export default {
     if (!storageEmpty('userInfo')) {
       this.userInfo = storage.userInfo
     }
+    if (!storageEmpty('myBgImage')) {
+      this.tempFilePathBg = storage.myBgImage
+    }
+    uni.downloadFile({
+      url: 'https://source.unsplash.com/random',
+      header: {
+        'Content-Type': 'image/png',
+      },
+      success: (res) => {
+        this.tempFilePathBg = res.tempFilePath
+        storage.myBgImage = this.tempFilePathBg
+      },
+    })
+    //
   },
   computed: {
     isGetUserProfileCanUse() {
@@ -97,10 +119,17 @@ export default {
         })
       }
     },
-    change(index) {
-      uni.navigateTo({
-        url: 'about',
-      })
+    change({ detail: { index } }) {
+      if (index === 0) {
+        uni.navigateTo({
+          url: '/pages/music/index',
+        })
+      }
+      if (index === 1) {
+        uni.navigateTo({
+          url: 'about',
+        })
+      }
     },
   },
 }

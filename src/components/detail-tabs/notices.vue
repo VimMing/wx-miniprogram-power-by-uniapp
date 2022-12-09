@@ -18,8 +18,8 @@
       </uni-card>
     </div>
     <div class="empty-holder" v-else>
-      <div>请点击下方或左下方的《订阅提醒》添加</div>
-
+      <div>请点击下方或左下方的《订阅提醒》</div>
+      <div>添加生日提醒, 不错过生日</div>
       <view class="submit--wrap">
         <button plain @click="remindFirstTime">订阅提醒</button>
       </view>
