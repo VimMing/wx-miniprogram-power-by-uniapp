@@ -1,0 +1,13 @@
+{
+  "desc": "生日提醒，备忘，音感训练，音程训练",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "pages/music/index"
+    },
+    {
+      "action": "allow",
+      "page": "*"
+    }
+  ]
+}
