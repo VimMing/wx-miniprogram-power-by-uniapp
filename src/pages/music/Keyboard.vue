@@ -12,11 +12,32 @@ export default {
       type: Number,
       default: 4,
     },
+    questionPitch: {
+      type: Number,
+    },
+    disable: {
+      type: Boolean,
+      default: false,
+    },
   },
-  computed: {
-    keys() {
+  data() {
+    return {
+      correct: false,
+      keys: [],
+    }
+  },
+  watch: {
+    baseKeyIndex() {
+      this.setKeys()
+    },
+  },
+  mounted() {
+    this.setKeys()
+  },
+  methods: {
+    setKeys() {
       const baseKeyIndex = this.baseKeyIndex
-      return [
+      this.keys = [
         {
           class: 'white c',
           pitch: baseKeyIndex * 12 + 0,
@@ -97,23 +118,36 @@ export default {
         },
       ]
     },
-  },
-  mounted() {},
-  methods: {
     play(pitch) {
       this.$emit('sheetPressed', pitch)
     },
     mouseup(key) {
-      key.class = key.class.replaceAll(' active', '')
-      key.pressing = true
-      key.class = key.class + ' active'
+      if (this.disable) {
+        return
+      }
+      if (Number(key.pitch) === Number(this.questionPitch)) {
+        this.correct = true
+      } else {
+        this.correct = false
+      }
+      if (this.correct) {
+        key.class = key.class + ' success active'
+        setTimeout(() => {
+          key.class = key.class.replace(' success active', '')
+        }, 300)
+      } else {
+        key.class = key.class + ' error active'
+        setTimeout(() => {
+          key.class = key.class.replace(' error active', '')
+        }, 300)
+      }
       this.play(key.pitch)
     },
   },
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .keyboard {
   position: fixed;
   bottom: 10rpx;
@@ -121,30 +155,32 @@ export default {
   max-width: 880px;
   display: block;
   width: 100%;
-  height: 350px;
+  height: 220px;
 }
 .white,
 .black {
   float: left;
   box-sizing: border-box;
-  -webkit-user-select: none;
+  /* -webkit-user-select: none;
   -moz-user-select: none;
   -o-user-select: none;
-  user-select: none;
+  user-select: none; */
 }
 
 .white {
-  height: 300px;
+  height: 200px;
   width: 12.5%;
-  border: 2px solid black;
+  border: 1px solid black;
   display: inline-block;
-  cursor: pointer;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  /* cursor: pointer; */
 }
 
 .black {
-  height: 200px;
+  height: 120px;
   width: 5%;
-  border: 2px solid #000000;
+  border: 1px solid #000000;
   background-color: #000000;
   display: inline-block;
   cursor: pointer;
@@ -152,16 +188,39 @@ export default {
   /* left: 15px;
   margin-left: -30px; */
   position: absolute;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+.black::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100px;
+  width: 100%;
+  background-color: #272626;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
-.white:active,
-.white.active {
-  background-color: #e0e0e0;
+.success.white:active,
+.success.white.active {
+  background-color: $uni-color-light-success;
 }
 
-.black:active,
-.black.active {
-  background-color: #404040;
+.success.black:active,
+.success.black.active {
+  background-color: $uni-color-light-success;
+}
+
+.error.white:active,
+.error.white.active {
+  background-color: $uni-color-error;
+}
+
+.error.black:active,
+.error.black.active {
+  background-color: $uni-color-error;
 }
 
 .c-sharp {
