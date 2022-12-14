@@ -148,9 +148,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+
 .keyboard {
   position: fixed;
-  bottom: 10rpx;
+  bottom: 130rpx;
   margin: 0 auto;
   max-width: 880px;
   display: block;

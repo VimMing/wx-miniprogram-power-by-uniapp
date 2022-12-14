@@ -56,18 +56,6 @@ WxAudioPlayer.prototype.queueWaveTable = function(
   envelope.pitch = pitch
   envelope.preset = preset
   return envelope
-
-  // console.log(envelope)
-  // // Get an AudioBufferSourceNode.
-  // // This is the AudioNode to use when we want to play an AudioBuffer
-  // var source = audioContext.createBufferSource()
-  // // set the buffer in the AudioBufferSourceNode
-  // source.buffer = zone.buffer
-  // // connect the AudioBufferSourceNode to the
-  // // destination so we can hear the sound
-  // source.connect(target)
-  // // start the source playing
-  // source.start()
 }
 
 WxAudioPlayer.prototype.noZeroVolume = function(n) {
@@ -140,6 +128,7 @@ WxAudioPlayer.prototype.setupEnvelope = function(
         var r =
           1 - (ahdsr[i].duration + lastTime - duration) / ahdsr[i].duration
         var n = lastVolume - r * (lastVolume - ahdsr[i].volume)
+        // https://developer.mozilla.org/en-US/docs/Web/API/AudioParam/linearRampToValueAtTime
         envelope.gain.linearRampToValueAtTime(
           this.noZeroVolume(volume * n),
           when + duration
@@ -159,11 +148,16 @@ WxAudioPlayer.prototype.setupEnvelope = function(
     when + duration + this.afterTime
   )
 }
-
+/***
+ * 生成一个增益节点
+ * create gainNode
+ * 
+ */
 WxAudioPlayer.prototype.findEnvelope = function(audioContext, target) {
   var envelope = null
   for (var i = 0; i < this.envelopes.length; i++) {
     var e = this.envelopes[i]
+    // that mean audioContext had been occupied
     if (
       e.target == target &&
       audioContext.currentTime > e.when + e.duration + 0.001
@@ -190,7 +184,10 @@ WxAudioPlayer.prototype.findEnvelope = function(audioContext, target) {
         envelope &&
         envelope.when + envelope.duration > audioContext.currentTime
       ) {
+        // The cancelScheduledValues() method of the AudioParam Interface cancels all scheduled future changes to the AudioParam
         envelope.gain.cancelScheduledValues(0)
+        // The setTargetAtTime() method of the AudioParam interface schedules the start of a gradual change to the AudioParam value. This is useful for decay or release portions of ADSR envelopes.
+        // transition will begin in the audioContext.currentTime + 0.00001
         envelope.gain.setTargetAtTime(0.00001, audioContext.currentTime, 0.1)
         envelope.when = audioContext.currentTime + 0.00001
         envelope.duration = 0
