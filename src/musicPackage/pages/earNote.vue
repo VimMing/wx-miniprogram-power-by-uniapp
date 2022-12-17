@@ -109,8 +109,8 @@
 </template>
 <script>
 import { storage, storageEmpty } from '@/utils'
-import WxAudioPlayer from './WxAudioPlayer'
-import Keyboard from './Keyboard.vue'
+import WxAudioPlayer from '@/musicPackage/utils/WxAudioPlayer'
+import Keyboard from '@/musicPackage/components/Keyboard.vue'
 import UniDrawer from '@/components/uni-drawer/uni-drawer.vue'
 let audioData = []
 let playIns = null
@@ -118,6 +118,7 @@ export default {
   components: { Keyboard, UniDrawer },
   data() {
     return {
+      timeId: null,
       percent: 0,
       percentStardard: 0,
       filePath: '',
@@ -240,10 +241,19 @@ export default {
       }
     },
     handleSheetPressed(pitch) {
+      if (this.timeId) {
+        clearTimeout(this.timeId)
+        if (this.keyboardDisabled) {
+          this.timeId = setTimeout(() => {
+            this.next(true)
+            this.keyboardDisabled = false
+          }, 1200)
+        }
+      }
       this.playPitch(pitch)
       if (Number(pitch) === Number(this.questionPitch)) {
         this.keyboardDisabled = true
-        setTimeout(() => {
+        this.timeId = setTimeout(() => {
           this.next(true)
           this.keyboardDisabled = false
         }, 1200)

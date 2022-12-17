@@ -122,7 +122,7 @@ export default {
     change({ detail: { index } }) {
       if (index === 0) {
         uni.navigateTo({
-          url: '/pages/music/index',
+          url: '/musicPackage/pages/earNote',
         })
       }
       if (index === 1) {

@@ -122,9 +122,6 @@ export default {
       this.$emit('sheetPressed', pitch)
     },
     mouseup(key) {
-      if (this.disable) {
-        return
-      }
       if (Number(key.pitch) === Number(this.questionPitch)) {
         this.correct = true
       } else {
@@ -134,12 +131,12 @@ export default {
         key.class = key.class + ' success active'
         setTimeout(() => {
           key.class = key.class.replace(' success active', '')
-        }, 300)
+        }, 100)
       } else {
         key.class = key.class + ' error active'
         setTimeout(() => {
           key.class = key.class.replace(' error active', '')
-        }, 300)
+        }, 100)
       }
       this.play(key.pitch)
     },
@@ -148,8 +145,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-
 .keyboard {
   position: fixed;
   bottom: 130rpx;

@@ -3,7 +3,7 @@
   "rules": [
     {
       "action": "allow",
-      "page": "pages/music/index"
+      "page": "musicPackage/pages/earNote"
     },
     {
       "action": "allow",

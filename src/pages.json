@@ -38,14 +38,25 @@
 			"style": {
 				"navigationBarTitleText": "关于"
 			}
-		},
-		{
-			"path": "pages/music/index",
-			"style": {
-				"navigationBarTitleText": "音程训练"
-			}
 		}
 	],
+	"subPackages":[
+		{
+			"root": "musicPackage",
+			"pages": [		{
+				"path": "pages/earNote",
+				"style": {
+					"navigationBarTitleText": "音程训练"
+				}
+			}]
+		}
+	],
+	"preloadRule": {
+		"pages/my/index": {
+			"network": "all",
+			"packages": ["musicPackage"]
+		}
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "生日备忘本",
