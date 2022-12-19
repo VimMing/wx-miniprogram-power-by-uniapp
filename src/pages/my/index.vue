@@ -76,7 +76,7 @@ export default {
       return
     }
     uni.downloadFile({
-      url: 'https://codehub.store/douban/today.png',
+      url: 'https://codehub.store/douban/my-bg.png',
       header: {
         'Content-Type': 'image/png',
       },
