@@ -73,17 +73,18 @@ export default {
     }
     if (!storageEmpty('myBgImage')) {
       this.tempFilePathBg = storage.myBgImage
+      return
     }
-    // uni.downloadFile({
-    //   url: 'https://source.unsplash.com/random',
-    //   header: {
-    //     'Content-Type': 'image/png',
-    //   },
-    //   success: (res) => {
-    //     this.tempFilePathBg = res.tempFilePath
-    //     storage.myBgImage = this.tempFilePathBg
-    //   },
-    // })
+    uni.downloadFile({
+      url: 'https://codehub.store/douban/today.png',
+      header: {
+        'Content-Type': 'image/png',
+      },
+      success: (res) => {
+        this.tempFilePathBg = res.tempFilePath
+        storage.myBgImage = this.tempFilePathBg
+      },
+    })
     //
   },
   computed: {

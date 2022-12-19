@@ -55,6 +55,10 @@
 		"pages/my/index": {
 			"network": "all",
 			"packages": ["musicPackage"]
+		},
+		"musicPackage/pages/earNote": {
+			"network": "all",
+			"packages": ["musicPackage"]
 		}
 	},
 	"globalStyle": {
