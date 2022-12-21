@@ -261,7 +261,19 @@ export default {
     },
     playPitch(pitch = this.questionPitch) {
       if (!this.audioContext) {
-        this.audioContext = wx.createWebAudioContext()
+        if (wx.createWebAudioContext) {
+          this.audioContext = wx.createWebAudioContext()
+        } else if (wx.createInnerAudioContext) {
+          console.log('createInnerAudioContext.....')
+          this.audioContext = wx.createInnerAudioContext({
+            useWebAudioImplement: true, // 是否使用 WebAudio 作为底层音频驱动，默认关闭。对于短音频、播放频繁的音频建议开启此选项，开启后将获得更优的性能表现。由于开启此选项后也会带来一定的内存增长，因此对于长音频建议关闭此选项
+          })
+        } else if (wx.createAudioContext) {
+          console.log('createAudioContext.....')
+          this.audioContext = wx.createAudioContext({
+            useWebAudioImplement: true, // 是否使用 WebAudio 作为底层音频驱动，默认关闭。对于短音频、播放频繁的音频建议开启此选项，开启后将获得更优的性能表现。由于开启此选项后也会带来一定的内存增长，因此对于长音频建议关闭此选项
+          })
+        }
       }
       playIns.queueWaveTable(
         this.audioContext,
