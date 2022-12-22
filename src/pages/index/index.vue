@@ -107,7 +107,10 @@ export default {
         backgroundColor: this.$color.primary,
         buttonColor: this.$color.primary,
       },
-      content: [{ text: '手动填写', iconPath: '/static/icons/pen.png' }],
+      content: [
+        { text: '邀请填写', iconFont: 'icon-invitation' },
+        { text: '手动填写', iconFont: 'icon-pen' },
+      ],
     }
   },
   computed: {
@@ -213,10 +216,15 @@ export default {
       })
     },
     trigger(e) {
-      console.log(e)
-      uni.navigateTo({
-        url: 'add',
-      })
+      if (e && Number(e.index) === 0) {
+        uni.navigateTo({
+          url: 'add-by-invite',
+        })
+      } else if (e && number(e.index) === 1) {
+        uni.navigateTo({
+          url: 'add',
+        })
+      }
     },
     handleAdd() {
       uni.navigateTo({

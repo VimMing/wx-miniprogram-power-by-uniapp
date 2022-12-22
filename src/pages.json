@@ -27,6 +27,13 @@
 			}
 		},
 		{
+			"path": "pages/index/add-by-invite",
+			"style": {
+				"navigationBarTitleText": "我想记住你的生日",
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/my/index",
 			"style": {
 				"navigationBarTitleText": "我的",

@@ -263,17 +263,26 @@ export default {
       if (!this.audioContext) {
         if (wx.createWebAudioContext) {
           this.audioContext = wx.createWebAudioContext()
-        } else if (wx.createInnerAudioContext) {
-          console.log('createInnerAudioContext.....')
-          this.audioContext = wx.createInnerAudioContext({
-            useWebAudioImplement: true, // 是否使用 WebAudio 作为底层音频驱动，默认关闭。对于短音频、播放频繁的音频建议开启此选项，开启后将获得更优的性能表现。由于开启此选项后也会带来一定的内存增长，因此对于长音频建议关闭此选项
+        } else {
+          // 如果希望用户在最新版本的客户端上体验您的小程序，可以这样子提示
+          wx.showModal({
+            title: '提示',
+            content: '当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。',
           })
-        } else if (wx.createAudioContext) {
-          console.log('createAudioContext.....')
-          this.audioContext = wx.createAudioContext({
-            useWebAudioImplement: true, // 是否使用 WebAudio 作为底层音频驱动，默认关闭。对于短音频、播放频繁的音频建议开启此选项，开启后将获得更优的性能表现。由于开启此选项后也会带来一定的内存增长，因此对于长音频建议关闭此选项
-          })
+          return
         }
+        // else if (wx.createInnerAudioContext) {
+
+        //   console.log('createInnerAudioContext.....')
+        //   this.audioContext = wx.createInnerAudioContext({
+        //     useWebAudioImplement: true, // 是否使用 WebAudio 作为底层音频驱动，默认关闭。对于短音频、播放频繁的音频建议开启此选项，开启后将获得更优的性能表现。由于开启此选项后也会带来一定的内存增长，因此对于长音频建议关闭此选项
+        //   })
+        // } else if (wx.createAudioContext) {
+        //   console.log('createAudioContext.....')
+        //   this.audioContext = wx.createAudioContext({
+        //     useWebAudioImplement: true, // 是否使用 WebAudio 作为底层音频驱动，默认关闭。对于短音频、播放频繁的音频建议开启此选项，开启后将获得更优的性能表现。由于开启此选项后也会带来一定的内存增长，因此对于长音频建议关闭此选项
+        //   })
+        // }
       }
       playIns.queueWaveTable(
         this.audioContext,

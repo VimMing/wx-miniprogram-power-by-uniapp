@@ -182,7 +182,7 @@ export default {
     background-color: $uni-color-primary;
     color: white;
     font-size: 30rpx;
-    border: 1rpx solid $uni-color-primary;
+    border: 0rpx solid $uni-color-primary;
     line-height: 1;
     padding: 10rpx 20rpx;
     border-radius: 25rpx;
