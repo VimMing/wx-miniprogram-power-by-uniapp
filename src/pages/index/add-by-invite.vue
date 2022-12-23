@@ -1,6 +1,13 @@
 <template>
   <view class="add-by-invite">
-    <i class="iconfont icon-home" @click="handleGoTab"></i>
+    <image
+      class="image-top"
+      src="https://codehub.store/image-store/record-birthday-by-invitation/1.png"
+    ></image>
+    <image
+      class="image-bottom"
+      src="https://codehub.store/image-store/record-birthday-by-invitation/3.png"
+    ></image>
     <view class="birthday--edit--page">
       <view class="avatar--wrap">
         <view class="iconfont" :class="'icon-' + form.zodiac">
@@ -19,7 +26,7 @@
         <view class="form-item">
           <view class="label">姓名</view>
           <view class="inner-form">
-            <input v-model="form.name" auto-focus placeholder="请输入名字" />
+            <input v-model="form.name" placeholder="请输入名字" />
           </view>
         </view>
         <view class="form-item">
@@ -110,7 +117,7 @@ import { storage } from '@/utils'
 export default {
   data() {
     return {
-      isCanSave: false,
+      isCanSave: true,
       zodiac: [
         'mouse',
         'cattle',
@@ -166,6 +173,9 @@ export default {
     let today = new Date()
     this.zodiacActiveIndex = (today.getFullYear() - 1996) % 12
     const userId = options.userId || -1
+    if (Number(userId) === -1) {
+      this.isCanSave = false
+    }
     setTimeout(() => {
       mySelf().then((res) => {
         this.userInfo = res.data
@@ -173,9 +183,11 @@ export default {
         if (Number(this.userInfo.id) !== Number(userId) && userId !== -1) {
           this.isCanSave = true
           this.userId = userId
+        } else {
+          this.isCanSave = false
         }
       })
-    }, 3000)
+    }, 5000)
   },
   onShareAppMessage(res) {
     if (res.from === 'button') {
@@ -348,17 +360,18 @@ export default {
   align-items: center;
 }
 .add-by-invite {
-  background-image: url('https://codehub.store/image-store/record-birthday-by-invitation.png');
-  background-size: 100% auto;
+  background-image: url('https://codehub.store/image-store/record-birthday-by-invitation/2.png');
+  background-size: cover;
   background-repeat: no-repeat;
-  padding-top: 200rpx;
+  padding-top: 100rpx;
   padding-left: 60rpx;
   padding-right: 60rpx;
   height: 100vh;
   box-sizing: border-box;
   .birthday--edit--page {
-    margin-top: 140rpx;
+    margin-top: 60rpx;
     background-color: rgba(255, 255, 255, 0.9);
+    border: 4px solid #eee;
     border-radius: 10px;
   }
 }
@@ -375,5 +388,19 @@ export default {
   background: rgba(0, 0, 0, 0.3);
   top: 60rpx;
   left: 20rpx;
+}
+.image-top {
+  position: fixed;
+  width: 668rpx;
+  height: 306rpx;
+  right: 0;
+  top: 10px;
+}
+.image-bottom {
+  position: fixed;
+  width: 306rpx;
+  height: 306rpx;
+  right: 0;
+  bottom: 20px;
 }
 </style>
