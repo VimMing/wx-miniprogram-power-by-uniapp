@@ -220,7 +220,7 @@ export default {
         uni.navigateTo({
           url: 'add-by-invite',
         })
-      } else if (e && number(e.index) === 1) {
+      } else if (e && Number(e.index) === 1) {
         uni.navigateTo({
           url: 'add',
         })

@@ -48,6 +48,14 @@ export function myFriends() {
   return http.get('/user/jwt/my-friends').then(res => res.data)
 }
 
+export function mySelf() {
+  return http.get('/user/getSelfInfo').then(res => res.data)
+}
+
+export function createByInvitation(data) {
+  return http.post('/user/createByInvitation', data)
+}
+
 export function createFriendBirthday(data) {
   return http.post('/user/jwt/create', data)
 }

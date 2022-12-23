@@ -1,5 +1,6 @@
 <template>
   <view class="add-by-invite">
+    <i class="iconfont icon-home" @click="handleGoTab"></i>
     <view class="birthday--edit--page">
       <view class="avatar--wrap">
         <view class="iconfont" :class="'icon-' + form.zodiac">
@@ -104,7 +105,7 @@
 </template>
 
 <script>
-import { createFriendBirthday, myFriends } from '@/utils/apis.js'
+import { createByInvitation, myFriends, mySelf } from '@/utils/apis.js'
 import { storage } from '@/utils'
 export default {
   data() {
@@ -140,12 +141,14 @@ export default {
       ],
       loading: false,
       showMore: false,
+      userInfo: {},
+      userId: -1,
       form: {
         name: '',
         sex: -1, // 0 boy , 1 girl
         birthday: '', // month-day
         type: 0, // 0: false, 1: true 公历还是农历
-        zodiac: 'picker',
+        zodiac: 'picker-invite',
       },
       zodiacActiveIndex: '',
       genders: [
@@ -162,23 +165,26 @@ export default {
   onLoad(options) {
     let today = new Date()
     this.zodiacActiveIndex = (today.getFullYear() - 1996) % 12
-    if (options.id) {
-      let temp = storage.currentBirthday
-      this.form = temp
-      this.zodiacActiveIndex = this.form.zodiac
-      this.form.zodiac = this.zodiac[this.zodiacActiveIndex]
-      this.form.type = Number(this.form.isLunar)
-      this.form.birthday = new Date(this.form.birthday).format('MM-dd')
-    }
+    const userId = options.userId || -1
+    setTimeout(() => {
+      mySelf().then((res) => {
+        this.userInfo = res.data
+        console.log(this.userInfo)
+        if (Number(this.userInfo.id) !== Number(userId) && userId !== -1) {
+          this.isCanSave = true
+          this.userId = userId
+        }
+      })
+    }, 3000)
   },
-    onShareAppMessage(res) {
+  onShareAppMessage(res) {
     if (res.from === 'button') {
       // 来自页面内转发按钮
       console.log(res.target)
     }
     return {
       title: `我想记住你的生日`,
-      path: `/pages/index/add-by-invite?userId=${this.currentBirthday.shareCode}`,
+      path: `/pages/index/add-by-invite?userId=${this.userInfo.id}`,
     }
   },
   computed: {
@@ -202,6 +208,9 @@ export default {
     },
   },
   methods: {
+    handleGoTab() {
+      uni.switchTab({ url: '/pages/index/index' })
+    },
     handleSave(e) {
       if (!this.form.name) {
         uni.showToast({
@@ -221,8 +230,8 @@ export default {
       }
       this.loading = true
       try {
-        createFriendBirthday({
-          id: this.form.id,
+        createByInvitation({
+          userId: this.userId,
           name: this.form.name,
           zodiac: +this.zodiacActiveIndex,
           birthday: '2021-' + this.form.birthday,
@@ -339,11 +348,32 @@ export default {
   align-items: center;
 }
 .add-by-invite {
+  background-image: url('https://codehub.store/image-store/record-birthday-by-invitation.png');
+  background-size: 100% auto;
+  background-repeat: no-repeat;
   padding-top: 200rpx;
   padding-left: 60rpx;
   padding-right: 60rpx;
+  height: 100vh;
+  box-sizing: border-box;
   .birthday--edit--page {
-    border: 4px solid #eeeeee;
+    margin-top: 140rpx;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
   }
+}
+.icon-home {
+  position: fixed;
+  font-size: 40px;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: rgba(0, 0, 0, 0.3);
+  top: 60rpx;
+  left: 20rpx;
 }
 </style>
