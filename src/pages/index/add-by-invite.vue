@@ -187,7 +187,7 @@ export default {
           this.isCanSave = false
         }
       })
-    }, 5000)
+    }, 3000)
   },
   onShareAppMessage(res) {
     if (res.from === 'button') {
@@ -243,7 +243,7 @@ export default {
       this.loading = true
       try {
         createByInvitation({
-          userId: this.userId,
+          userId: Number(this.userId),
           name: this.form.name,
           zodiac: +this.zodiacActiveIndex,
           birthday: '2021-' + this.form.birthday,
@@ -256,9 +256,7 @@ export default {
                 storage.birthdayList = res.data
                 const list = res.data
                 storage.currentBirthday = list.find((i) => i.id === item.id) || {}
-                uni.redirectTo({
-                  url: `/pages/index/detail?id=${item.id}`,
-                })
+                uni.switchTab({ url: '/pages/index/index' })
                 this.loading = false
               })
               .finally(() => {

@@ -180,7 +180,7 @@ export default {
     }
     return {
       title: `音程训练～～`,
-      path: `/pages/music/index`,
+      path: `/musicPackage/pages/earNote`,
     }
   },
   methods: {
