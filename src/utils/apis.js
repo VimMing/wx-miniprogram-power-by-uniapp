@@ -137,6 +137,19 @@ export function deleteFriend(id) {
       return res
     })
 }
+
+export function deleteNotice(id) {
+  return http
+    .get('/wxSubscription/destory', {
+      params: {
+        id
+      }
+    })
+    .then(res => {
+      return res
+    })
+}
+
 export function addBirthdayNotice(params) {
   return http.post('/wx/addBirthdayNotice', params).then(res => {
     return res.data

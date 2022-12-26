@@ -30,6 +30,7 @@
         :b="currentBirthday"
         v-show="defaultIndex === 0"
         @remindAgain="remindAgain"
+        @remindDel="handleDelRemind"
         @remindFirstTime="remind"
       />
       <events-tab :events="events" v-show="defaultIndex === 1" />
@@ -108,6 +109,7 @@ import {
   birthdayNoticeList,
   myFriends,
   deleteFriend,
+  deleteNotice,
   lunarToSolar,
 } from '@/utils/apis.js'
 import { storage, storageEmpty, promisify, formatBirthday } from '@/utils'
@@ -138,6 +140,7 @@ export default {
       defaultIndex: 0,
       loading: {
         adding: false,
+        notice: false,
       },
       zodiac: [
         'mouse',
@@ -185,6 +188,23 @@ export default {
     },
   },
   methods: {
+    handleDelRemind(item) {
+      if (this.loading.notice) {
+        return
+      }
+      this.loading.notice = true
+      wx.showLoading({
+        title: '加载中',
+      })
+      deleteNotice(item.id)
+        .then(() => {
+          this.birthdayNoticeList()
+        })
+        .finally(() => {
+          wx.hideLoading()
+          this.loading.notice = false
+        })
+    },
     handleLongTapDelete(item) {
       promisify(uni.showModal)({
         title: '删除确认',
@@ -301,6 +321,13 @@ export default {
      * @param {Object} value
      */
     async confirm(done, value) {
+      if (this.loading.notice) {
+        return
+      }
+      this.loading.notice = true
+      wx.showLoading({
+        title: '加载中',
+      })
       // 输入框的值
       let j = new Date(this.currentBirthday._solarBirthday)
       let t = this.form.noticeDay
@@ -336,12 +363,17 @@ export default {
         id: this.updateSubscriptionId,
         when: birthday.format('yyyy-MM-dd HH:mm:ss'),
         birthdayId: this.currentBirthday.id,
-      }).then(() => {
-        this.birthdayNoticeList().then(() => {
-          this.defaultIndex = 0
-          this.$refs.tabs.tabClick(this.defaultIndex)
-        })
       })
+        .then(() => {
+          this.birthdayNoticeList().then(() => {
+            this.defaultIndex = 0
+            this.$refs.tabs.tabClick(this.defaultIndex)
+          })
+        })
+        .finally(() => {
+          this.loading.notice = false
+          wx.hideLoading()
+        })
 
       // TODO 做一些其他的事情，手动执行 done 才会关闭对话框
       done()
