@@ -17,7 +17,6 @@
             >
           </view>
           <view class="no-info-text-wrapper" v-else>
-            <!-- <button  class="getInfo" @click="getUserInfo">获取头像</button> -->
             <button open-type="chooseAvatar" class="getInfo" @chooseavatar="getAvatar">
               获取头像
             </button>
@@ -93,32 +92,15 @@ export default {
     },
   },
   methods: {
-    updateUserInfo(e) {
-      this.userInfo = e.detail.userInfo
-      updateUserInfo(this.userInfo)
-      this.$loginUser = this.userInfo
-      storage.userInfo = this.userInfo
-    },
     getAvatar(e) {
       const { avatarUrl } = e.detail
       this.userInfo = {
         avatarUrl: avatarUrl,
       }
+      updateUserInfo({
+        avatarUrl,
+      })
       storage.userInfo = this.userInfo
-    },
-    getUserInfo(e) {
-      if (wx.getUserProfile) {
-        console.log('使用getUserProfile方法')
-        wx.getUserProfile({
-          desc: '用于完善用员资料', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-          success: (e) => {
-            this.updateUserInfo({ detail: e })
-          },
-          fail: (e) => {
-            console.log(e)
-          },
-        })
-      }
     },
     change({ detail: { index } }) {
       if (index === 0) {

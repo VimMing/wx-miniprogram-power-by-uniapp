@@ -21,7 +21,7 @@
               <text>再次订阅</text>
             </button>
             <button @click="delRemind(item)" plain>
-              <text>删除数据</text>
+              <text>删除提醒</text>
             </button>
           </view>
         </template>
