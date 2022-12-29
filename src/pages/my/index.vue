@@ -49,7 +49,7 @@ import uniIcon from '@/components/uni-icon/uni-icon.vue'
 import uniGrid from '@/components/uni-grid/uni-grid.vue'
 import uniGridItem from '@/components/uni-grid-item/uni-grid-item.vue'
 // const _ = require('ramda');
-import { updateUserInfo } from '@/utils/apis.js'
+import { updateUserInfo, mySelf } from '@/utils/apis.js'
 import { storage, storageEmpty } from '@/utils'
 
 export default {
@@ -67,9 +67,10 @@ export default {
     }
   },
   onLoad() {
-    if (!storageEmpty('userInfo')) {
-      this.userInfo = storage.userInfo
-    }
+    mySelf().then((res) => {
+      this.userInfo = res.data
+      storage.userInfo = this.userInfo
+    })
     if (!storageEmpty('myBgImage')) {
       this.tempFilePathBg = storage.myBgImage
       return
