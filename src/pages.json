@@ -44,6 +44,12 @@
 			"style": {
 				"navigationBarTitleText": "关于"
 			}
+		},
+		{
+			"path": "pages/my/setting",
+			"style": {
+				"navigationBarTitleText": "我的信息"
+			}
 		}
 	],
 	"subPackages":[

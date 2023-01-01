@@ -22,7 +22,7 @@
             </button>
           </view>
         </view>
-        <view class="goto-wrapper flex-align-center">
+        <view class="goto-wrapper flex-align-center" @click="goToSetting">
           <uni-icon type="forward" color="white"></uni-icon>
         </view>
       </view>
@@ -93,6 +93,11 @@ export default {
     },
   },
   methods: {
+    goToSetting() {
+      uni.navigateTo({
+        url: 'setting',
+      })
+    },
     getAvatar(e) {
       const { avatarUrl } = e.detail
       this.userInfo = {

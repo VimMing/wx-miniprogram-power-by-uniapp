@@ -40,7 +40,7 @@ export default {
     },
   },
   mounted() {
-    this._value = value
+    this._value = this.value
   },
   methods: {
     handleInput() {

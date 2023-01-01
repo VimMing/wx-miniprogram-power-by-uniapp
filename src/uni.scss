@@ -79,3 +79,14 @@ $uni-font-size-paragraph:30rpx;
 
 // 头像大小
 $uni-avatar-size-base: 80rpx;
+
+.flex{
+    display: flex;
+}
+
+.justify-content-center{
+    justify-content: center;
+}
+.align-items-center{
+    align-items: center;
+}
