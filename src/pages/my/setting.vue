@@ -13,7 +13,9 @@
     <form-item label="头像">
       <div class="flex justify-content-center align-items-center">
         <image class="avatar" :src="userInfo.avatarUrl" v-if="userInfo.avatarUrl" />
-        <button open-type="chooseAvatar" @chooseavatar="getAvatar">获取头像</button>
+        <button class="avatar-btn" open-type="chooseAvatar" @chooseavatar="getAvatar">
+          获取头像
+        </button>
       </div>
     </form-item>
   </view>
@@ -43,6 +45,10 @@ export default {
     handleInputChange(e) {
       const { value } = e.detail
       this.userInfo.nickName = value
+      updateUserInfo({
+        nickName: this.userInfo.nickName,
+      })
+      storage.userInfo = this.userInfo
     },
     getAvatar(e) {
       const { avatarUrl } = e.detail
@@ -50,7 +56,6 @@ export default {
       storage.userInfo = this.userInfo
       updateUserInfo({
         avatarUrl,
-        nickName: this.userInfo.nickName,
       })
     },
   },
@@ -67,5 +72,14 @@ export default {
   line-height: 120rpx;
   background-color: $uni-bg-color-grey;
   color: #c0c0c0;
+}
+.avatar-btn {
+  margin-left: auto;
+  margin-right: 10rpx;
+  background-color: white;
+  color: $uni-color-primary;
+}
+button.avatar-btn::after {
+  border: none;
 }
 </style>

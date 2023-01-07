@@ -66,6 +66,11 @@ export default {
       },
     }
   },
+  onShow() {
+    if (!storageEmpty('userInfo')) {
+      this.userInfo = storage.userInfo
+    }
+  },
   onLoad() {
     mySelf().then((res) => {
       this.userInfo = res.data

@@ -154,6 +154,7 @@ export default {
         name: '',
         sex: -1, // 0 boy , 1 girl
         birthday: '', // month-day
+        _birthday: '', // month-day
         type: 0, // 0: false, 1: true 公历还是农历
         zodiac: 'picker-invite',
       },
@@ -176,18 +177,7 @@ export default {
     if (Number(userId) === -1) {
       this.isCanSave = false
     }
-    setTimeout(() => {
-      mySelf().then((res) => {
-        this.userInfo = res.data
-        console.log(this.userInfo)
-        if (Number(this.userInfo.id) !== Number(userId) && userId !== -1) {
-          this.isCanSave = true
-          this.userId = userId
-        } else {
-          this.isCanSave = false
-        }
-      })
-    }, 3000)
+    this.requestSelf(userId)
   },
   onShareAppMessage(res) {
     if (res.from === 'button') {
@@ -220,6 +210,34 @@ export default {
     },
   },
   methods: {
+    requestSelf(userId) {
+      if (getApp().globalData.isRequestToken) {
+        mySelf().then((res) => {
+          this.userInfo = res.data
+          if (Number(this.userInfo.id) !== Number(userId) && userId !== -1) {
+            this.isCanSave = true
+            this.userId = userId
+          } else {
+            this.isCanSave = false
+          }
+          if (this.userInfo && this.userInfo.birthday && this.isCanSave) {
+            const birthday = this.userInfo.birthday
+            const date = new Date(birthday.birthday)
+            this.form.name = birthday.name
+            this.form.birthday = date.format('MM-dd')
+            this.form._birthday = date.format('MM月dd日')
+            this.zodiacActiveIndex = birthday.zodiac
+            this.form.zodiac = this.zodiac[this.zodiacActiveIndex]
+            this.form.type = Number(birthday.isLunar)
+          }
+        })
+      } else {
+        setTimeout(() => {
+          console.log('未获得token, 500ms后重新请求')
+          this.requestSelf.call(this)
+        }, 500)
+      }
+    },
     handleGoTab() {
       uni.switchTab({ url: '/pages/index/index' })
     },
@@ -291,7 +309,6 @@ export default {
         },
         detail: { value },
       } = e
-      console.log(name, value)
       if (name === 'type' || name === 'sex') {
         this.form[name] = value
       }
